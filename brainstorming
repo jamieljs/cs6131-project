@@ -1,0 +1,93 @@
+- given the ingredients you have and how many servings you want, give you a list of recipes you can make
+- filter by cuisine/taste/difficulty?
+- rating system (if time)
+
+table RECIPES
+- recipe_id (number)
+- recipe_name
+- recipe_description
+- recipe_instructions
+- recipe_cuisine
+
+table INGREDIENTS
+- ingredient_id
+- ingredient_name
+
+table MEASUREMENT_TOOLS
+- measurement_tool_id
+- measurement_tool_name
+- corresponding weight in grams???
+- corresponding volume in ml???
+
+table RECIPE_INGREDIENT
+- recipe_id
+- ingredient_id
+- measurement_tool_id
+- quantity (number)
+
+table TAGS
+- tag_id
+- tag_name (spicy, vegetarian, allergens)
+- tag_icon
+
+table RECIPE_TAG
+- recipe_id
+- tag_id
+
+table USERS
+- user_id
+- user_username
+- user_password (hashed)
+- user_salt (for hash)
+- user_email
+- user_description
+
+table RECIPE_CREATOR
+- recipe_id
+- user_id
+
+table USER_INGREDIENT
+- user_id
+- ingredient_id
+- measurement_tool_id
+- quantity (number)
+
+table RECIPE_RATING
+- recipe_id
+- user_id
+- rating (out of 5)
+
+
+
+
+
+
+
+
+navbar (base.html)
+- home
+- browse/filter
+- create new recipe
+- feedback
+- edit profile / login/register
+
+browse
+
+
+feedback
+
+home
+- login/register if not logged in
+- intro rubbish
+- browse recipes
+
+login
+
+profile
+- user info
+- recipes (can edit/delete your own)
+- can see and edit your own ingredients
+- edit ur own password
+
+recipe
+

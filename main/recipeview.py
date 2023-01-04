@@ -1,0 +1,2 @@
+def recipe():
+    return None

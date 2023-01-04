@@ -1,0 +1,2 @@
+def editprofile():
+    return None

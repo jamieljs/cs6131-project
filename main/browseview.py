@@ -1,0 +1,2 @@
+def browse():
+    return None

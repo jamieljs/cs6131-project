@@ -1,0 +1,2 @@
+def editrecipe():
+    return None

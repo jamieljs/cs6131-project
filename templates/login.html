@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %} Login {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container row text-center flex align-items-center m-auto">
+    <div class="col flex align-items-center m-auto">
+        <ul class="nav nav-tabs nav-justified" role="tablist" id="problem-all-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#login" id="login-tab">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#register" id="register-tab">Register</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="login-page-tab-content">
+            <div id="login" class="container tab-pane active">
+                <h3> <b>Log in to Existing Account</b> </h3>
+                <form id="login-form" method="post" role="form">
+                    {{ loginForm.hidden_tag() }}
+                    <div class="form-floating">
+                        {{ loginForm.username.label }}
+                        {{ loginForm.username(class_="form-control") }}
+                    </div>
+                    <div class="form-floating">
+                        {{ loginForm.password.label }}
+                        {{ loginForm.password(class_="form-control") }}
+                    </div>
+                  
+                    {{ loginForm.login(class_="form-control w-100 btn btn-lg btn-primary") }}
+                    
+                    <div class="text-center">
+                        <a href="/recoverpassword" id="forgot-password" class="forgot-password">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="register" class="container tab-pane fade">
+                <h3> <b>Register a New Account</b> </h3>
+                <form id="register-form" method="post" role="form">
+                    {{ registerForm.hidden_tag() }}
+                    <div class="form-floating">
+                        {{ registerForm.username.label }}
+                        {{ registerForm.username(class_="form-control") }}
+                    </div>
+                    <div class="form-floating">
+                        {{ registerForm.email.label }}
+                        {{ registerForm.email(class_="form-control") }}
+                    </div>
+                    <div class="form-floating">
+                        {{ registerForm.password.label }}
+                        {{ registerForm.password(class_="form-control") }}
+                    </div>
+                    <div class="form-floating">
+                        {{ registerForm.confirm_password.label }}
+                        {{ registerForm.confirm_password(class_="form-control") }}
+                    </div>
+
+                    {{ registerForm.register(class_="form-control w-100 btn btn-lg btn-primary") }}
+                </form>
+            </div>
+
+            <!--div id="register" class="container tab-pane fade">
+                <h3> <b>Register a New Account</b> </h3>
+                <form id="register-form" method="post" role="form">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingRegisterUsername" name="username" placeholder="Username" value="">
+                        <label for="floatingRegisterUsername">Username</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="Email" value="">
+                        <label for="floatingEmail">Email</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="floatingRegisterPassword" name="password" placeholder="Password">
+                        <label for="floatingRegisterPassword">Password</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="floatingConfirmPassword" name="confirm_password" placeholder="Confirm Password">
+                        <label for="floatingConfirmPassword">Confirm Password</label>
+                    </div>
+
+                    <input type="submit" name="register_submit" id="register-submit" class="form-control w-100 btn btn-lg btn-primary" value="Register">
+                </form>
+            </div-->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
