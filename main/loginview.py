@@ -9,10 +9,9 @@ def login():
         return redirect('/')
     loginForm = LoginForm()
     registerForm = RegisterForm()
-    print(tools.user_list)
 
     if loginForm.is_submitted() and loginForm.login.data:
-        if loginForm.validate_on_submit():
+        if loginForm.validate():
             result = request.form
             username = result['username']
             password = result['password']
@@ -22,10 +21,10 @@ def login():
                     tools.login(checkUser)
                     flash('Welcome back, ' + str(username) + '!', 'success')
                     return redirect('/')
-        flash('Login failed. Please try again.', 'error')
+        flash('Login failed. Please try again.', 'danger')
         return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='login')
     elif registerForm.is_submitted() and registerForm.register.data:
-        if registerForm.validate_on_submit() :
+        if registerForm.validate():
             result = request.form
             username = result['reg_username']
             email = result['reg_email']
@@ -34,16 +33,16 @@ def login():
             if checkUser == None:
                 checkUserEmail = tools.checkEmailExists(email)
                 if checkUserEmail:
-                    flash('This email address already has an associated account. Please try again', 'error')
+                    flash('This email address already has an associated account. Please try again', 'danger')
                     return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
                 else:
                     tools.login(tools.createUser(username, email, password))
                     flash('Welcome, ' + str(username) + '!', 'success')
                     return redirect('/')
             else:
-                flash('This username is taken. Please try again.', 'error')
+                flash('This username is taken. Please try again.', 'danger')
                 return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
-        flash('Registration failed. Please try again.', 'error')
+        flash('Registration failed. Please try again.', 'danger')
         return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
         
     return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='login')

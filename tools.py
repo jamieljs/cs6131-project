@@ -38,7 +38,8 @@ def checkPassword(userinfo, password):
     return (userinfo['user_password'] == hashPassword(password, userinfo['user_salt']))
 
 def hashPassword(password, salt):
-    return hashlib.sha512(password + salt).hexdigest()
+    salted = password + salt
+    return hashlib.sha512(salted.encode('utf-8')).hexdigest()
 
 def createUser(username, email, password):
     salt = uuid.uuid4().hex
@@ -64,3 +65,11 @@ def newSearchQuery(form_data):
 
 def getSavedQueryData():
     return saved_query_data
+
+# creates new recipe, stores basic information, returns id
+def newRecipe():
+    return 0
+
+# creates new collection, stores basic information, returns id
+def newRecipe():
+    return 0

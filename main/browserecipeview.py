@@ -3,7 +3,7 @@ from forms import QueryForm
 import tools
 from math import ceil
 
-def browse():
+def browserecipe():
     userinfo = tools.getCurrentUserInfo()
     form = QueryForm()
 
