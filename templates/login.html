@@ -4,86 +4,98 @@
 
 {% block content %}
 
-<div class="container row text-center flex align-items-center m-auto">
-    <div class="col flex align-items-center m-auto">
-        <ul class="nav nav-tabs nav-justified" role="tablist" id="problem-all-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#login" id="login-tab">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#register" id="register-tab">Register</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="login-page-tab-content">
-            <div id="login" class="container tab-pane active">
-                <h3> <b>Log in to Existing Account</b> </h3>
-                <form id="login-form" method="post" role="form">
-                    {{ loginForm.hidden_tag() }}
-                    <div class="form-floating">
-                        {{ loginForm.username.label }}
-                        {{ loginForm.username(class_="form-control") }}
-                    </div>
-                    <div class="form-floating">
-                        {{ loginForm.password.label }}
-                        {{ loginForm.password(class_="form-control") }}
-                    </div>
-                  
-                    {{ loginForm.login(class_="form-control w-100 btn btn-lg btn-primary") }}
+<div class="container min-vh-100 d-flex flex-column justify-content-center m-auto w-50">
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs nav-justified card-header-tabs" id="login-page-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                <button class="nav-link {% if pageType == 'login' %} active {% endif %}" id="home-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab" aria-controls="login-tab-pane" aria-selected="true">Login</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                <button class="nav-link {% if pageType == 'register' %} active {% endif %}" id="profile-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab" aria-controls="register-tab-pane" aria-selected="false">Register</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="login-page-tab-content">
+                <div class="container tab-pane {% if pageType == 'login' %} show active {% else %} fade {% endif %}" id="login-tab-pane" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
+                    <h3 class="m-4"> <b>Log in to Existing Account</b> </h3>
+                    <form id="login-form m-4" method="post" role="form">
+                        {{ loginForm.hidden_tag() }}
+                        <div class="form-floating m-4">
+                            {{ loginForm.username(class_="form-control" + (" is-invalid" if loginForm.username.errors else "")) }}
+                            {{ loginForm.username.label }}
+                            {% if loginForm.username.errors %}
+                                {% for error in loginForm.username.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ loginForm.password(class_="form-control" + (" is-invalid" if loginForm.password.errors else "")) }}
+                            {{ loginForm.password.label }}
+                            {% if loginForm.password.errors %}
+                                {% for error in loginForm.password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     
-                    <div class="text-center">
-                        <a href="/recoverpassword" id="forgot-password" class="forgot-password">Forgot Password?</a>
-                    </div>
-                </form>
+                        {{ loginForm.login(class_="form-control w-50 mb-4 btn btn-lg btn-primary") }}
+                    </form>
+                </div>
+                <div class="container tab-pane {% if pageType == 'register' %} show active {% else %} fade {% endif %}" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0">
+                    <h3 class="m-4"> <b>Register a New Account</b> </h3>
+                    <form id="register-form m-4" method="post" role="form">
+                        {{ registerForm.hidden_tag() }}
+                        <div class="form-floating m-4">
+                            {{ registerForm.reg_username(class_="form-control" + (" is-invalid" if registerForm.reg_username.errors else "")) }}
+                            {{ registerForm.reg_username.label }}
+                            {% if registerForm.reg_username.errors %}
+                                {% for error in registerForm.reg_username.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <script>
+                                document.getElementById('reg_username').removeAttribute('minlength')
+                            </script>
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ registerForm.reg_email(class_="form-control" + (" is-invalid" if registerForm.reg_email.errors else "")) }}
+                            {{ registerForm.reg_email.label }}
+                            {% if registerForm.reg_email.errors %}
+                                {% for error in registerForm.reg_email.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ registerForm.reg_password(class_="form-control" + (" is-invalid" if registerForm.reg_password.errors else "")) }}
+                            {{ registerForm.reg_password.label }}
+                            {% if registerForm.reg_password.errors %}
+                                {% for error in registerForm.reg_password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <script>
+                                document.getElementById('reg_password').removeAttribute('minlength')
+                                document.getElementById('reg_password').removeAttribute('maxlength')
+                            </script>
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ registerForm.confirm_password(class_="form-control" + (" is-invalid" if registerForm.confirm_password.errors else "")) }}
+                            {{ registerForm.confirm_password.label }}
+                            {% if registerForm.confirm_password.errors %}
+                                {% for error in registerForm.confirm_password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {{ registerForm.register(class_="form-control w-50 mb-4 btn btn-lg btn-primary") }}
+                    </form>
+                </div>
             </div>
-
-            <div id="register" class="container tab-pane fade">
-                <h3> <b>Register a New Account</b> </h3>
-                <form id="register-form" method="post" role="form">
-                    {{ registerForm.hidden_tag() }}
-                    <div class="form-floating">
-                        {{ registerForm.username.label }}
-                        {{ registerForm.username(class_="form-control") }}
-                    </div>
-                    <div class="form-floating">
-                        {{ registerForm.email.label }}
-                        {{ registerForm.email(class_="form-control") }}
-                    </div>
-                    <div class="form-floating">
-                        {{ registerForm.password.label }}
-                        {{ registerForm.password(class_="form-control") }}
-                    </div>
-                    <div class="form-floating">
-                        {{ registerForm.confirm_password.label }}
-                        {{ registerForm.confirm_password(class_="form-control") }}
-                    </div>
-
-                    {{ registerForm.register(class_="form-control w-100 btn btn-lg btn-primary") }}
-                </form>
-            </div>
-
-            <!--div id="register" class="container tab-pane fade">
-                <h3> <b>Register a New Account</b> </h3>
-                <form id="register-form" method="post" role="form">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingRegisterUsername" name="username" placeholder="Username" value="">
-                        <label for="floatingRegisterUsername">Username</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="Email" value="">
-                        <label for="floatingEmail">Email</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingRegisterPassword" name="password" placeholder="Password">
-                        <label for="floatingRegisterPassword">Password</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingConfirmPassword" name="confirm_password" placeholder="Confirm Password">
-                        <label for="floatingConfirmPassword">Confirm Password</label>
-                    </div>
-
-                    <input type="submit" name="register_submit" id="register-submit" class="form-control w-100 btn btn-lg btn-primary" value="Register">
-                </form>
-            </div-->
         </div>
     </div>
 </div>

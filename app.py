@@ -1,7 +1,7 @@
 import flask
 from flask import Flask,Blueprint,session,flash,redirect,url_for,render_template,abort, send_from_directory
 
-from main import browseview, editprofileview, editrecipeview, feedbackview, homeview, loginview, profileview, recipeview, recoverpasswordview
+from main import browserecipeview, editprofileview, editrecipeview, feedbackview, homeview, inventoryview, loginview, profileview, recipeview
 
 app = Flask(__name__)
 
@@ -10,14 +10,14 @@ SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
-app.add_url_rule('/browse', view_func = browseview.browse)
+app.add_url_rule('/browse', view_func = browserecipeview.browse)
 app.add_url_rule('/editprofile', view_func = editprofileview.editprofile)
-app.add_url_rule('/editrecipe/<recipe_id>', view_func = editrecipeview.editrecipe)
-app.add_url_rule('/feedback', view_func = feedbackview.feedback)
+app.add_url_rule('/editrecipe/<int:recipe_id>', view_func = editrecipeview.editrecipe)
+app.add_url_rule('/feedback', view_func = feedbackview.feedback, methods=['GET', 'POST'])
+app.add_url_rule('/inventory', view_func = inventoryview.inventory, methods=['GET', 'POST'])
 app.add_url_rule('/login', view_func = loginview.login, methods=['GET', 'POST'])
-app.add_url_rule('/profile/<user_id>', view_func = profileview.profile)
-app.add_url_rule('/recipe/<recipe_id>', view_func = recipeview.recipe)
-app.add_url_rule('/recoverpassword', view_func = recoverpasswordview.recoverpassword)
+app.add_url_rule('/profile/<int:user_id>', view_func = profileview.profile)
+app.add_url_rule('/recipe/<int:recipe_id>', view_func = recipeview.recipe)
 app.add_url_rule('/', view_func = homeview.home)
 
 @app.route('/logout')

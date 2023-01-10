@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} Feedback {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container min-vh-100 d-flex flex-column justify-content-center text-center m-auto">
+    <h1> <b>Send Feedback to Developer</b> </h1>
+
+    <form id="feedback-form" method="post" role="form">
+        {{ form.csrf_token }}
+        <div class="form-floating my-5">
+            
+            {{ form.feedback_text(class_="form-control " + (" is-invalid" if form.feedback_text.errors else "")) }}
+            {{ form.feedback_text.label }}
+            {% if form.feedback_text.errors %}
+                {% for error in form.feedback_text.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <script>
+            document.getElementById('feedback_text').removeAttribute('minlength')
+        </script>
+
+        {{ form.submit_feedback(class_="form-control w-50 btn btn-lg btn-primary") }}
+    </form>
+</div>
+
+{% endblock %}
