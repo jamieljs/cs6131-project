@@ -25,7 +25,7 @@
             <nav id="sidebar" class="col navbar-dark d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
                 <div class="d-flex flex-row flex-wrap align-items-center text-center sidebar-header">
                     <a href="/" class="text-white text-decoration-none m-auto mb-0">
-                        <img style="width: 140px;" src="{{ url_for('static', filename='app_name.png') }}">
+                        <img id="app-icon" style="width: 140px;" src="{{ url_for('static', filename='app_name.png') }}">
                     </a>
                     <button type="button" class="btn btn-outline-light sidebar-collapse-btn m-auto" onclick="sidebarFunction()">
                         <svg id="close-menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
@@ -65,7 +65,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/browserecipe">Browse Recipes</a></li>
-                                <li><a class="dropdown-item" href="/profile/{{userinfo.user_id}}/recipes">My Recipes</a></li>
+                                <li><a class="dropdown-item" href="/browserecipe?creator={{userinfo['user_id']}}">My Recipes</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/createrecipe">Create New Recipe</a></li>
                             </ul>
@@ -81,14 +81,14 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/browsecollection">Browse Collections</a></li>
-                                <li><a class="dropdown-item" href="/profile/{{userinfo.user_id}}/collections">My Collections</a></li>
+                                <li><a class="dropdown-item" href="/browsecollection?creator={{userinfo['user_id']}}">My Collections</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/createcollection">Create New Collection</a></li>
                             </ul>
                         </li>
                         <hr>
                         <li class="nav-item">
-                            <a href="/profile/{{userinfo.user_id}}" class="nav-link {% if currentPage and currentPage == 'profile' %} active {% endif %}">
+                            <a href="/profile/{{userinfo['user_id']}}" class="nav-link {% if currentPage and currentPage == 'profile' %} active {% endif %}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
                             </svg>
@@ -149,9 +149,9 @@
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                             {% for category, message in messages %}
-                                <div class="alert alert-{{category}} alert-dismissible fade show mt-4" role="alert">
+                                <div class="alert alert-{{category}} alert-dismissible fade show mt-4" role="alert" style="position: relative">
                                     {{message | safe}}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: currentColor;background: none;border: none;position: absolute;right: 10px;top: 50%;transform: translate(0, -50%);">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>

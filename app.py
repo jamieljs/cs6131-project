@@ -1,7 +1,7 @@
 import flask
 from flask import Flask,Blueprint,session,flash,redirect,url_for,render_template,abort, send_from_directory
 
-from main import browsecollectionview, browserecipeview, collectionview, editcollectionview, editprofileview, editrecipeview, feedbackview, homeview, inventoryview, loginview, profileview, recipeview
+from main import browsecollectionview, browserecipeview, collectionview, editcollectionview, editrecipeview, feedbackview, homeview, inventoryview, loginview, profileview, recipeview
 
 import tools
 
@@ -12,11 +12,10 @@ SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
-app.add_url_rule('/browsecollection', view_func = browsecollectionview.browsecollection)
-app.add_url_rule('/browserecipe', view_func = browserecipeview.browserecipe)
+app.add_url_rule('/browsecollection', view_func = browsecollectionview.browsecollection, methods=['GET', 'POST'])
+app.add_url_rule('/browserecipe', view_func = browserecipeview.browserecipe, methods=['GET', 'POST'])
 app.add_url_rule('/collection/<int:collection_id>', view_func = collectionview.collection)
 app.add_url_rule('/editcollection/<int:collection_id>', view_func = editcollectionview.editcollection)
-app.add_url_rule('/editprofile', view_func = editprofileview.editprofile)
 app.add_url_rule('/editrecipe/<int:recipe_id>', view_func = editrecipeview.editrecipe)
 app.add_url_rule('/feedback', view_func = feedbackview.feedback, methods=['GET', 'POST'])
 app.add_url_rule('/inventory', view_func = inventoryview.inventory, methods=['GET', 'POST'])
@@ -35,12 +34,14 @@ def logout():
 
 @app.route('/createrecipe')
 def createRecipe():
-    recipe_id = tools.newRecipe()
+    creator_id = tools.getCurrentUserInfo().user_id
+    recipe_id = tools.newRecipe(creator_id)
     return redirect('/editrecipe/' + str(recipe_id))
 
 @app.route('/createcollection')
 def createCollection():
-    collection_id = tools.newCollection()
+    creator_id = tools.getCurrentUserInfo().user_id
+    collection_id = tools.newCollection(creator_id)
     return redirect('/editcollection/' + str(collection_id))
 
 if __name__ == '__main__':

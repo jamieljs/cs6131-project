@@ -7,7 +7,6 @@ table COLLECTIONS
 - collection_name
 - collection_description
 - collection_privacy
-- collection_date_created
 
 table RECIPE_COLLECTION
 - collection_id
@@ -20,10 +19,9 @@ table RECIPES
 - recipe_description
 - recipe_instructions
 - recipe_difficulty
-- recipe_cook_time
+- recipe_cook_time (hours)
 - recipe_privacy
 - recipe_image (url)
-- recipe_date_created
 
 table INGREDIENTS
 - ingredient_id
@@ -66,9 +64,6 @@ table USERS
 - user_salt (for hash)
 - user_email
 - user_description
-- user_theme
-- user_hue
-- user_image (url)
 
 table USER_INGREDIENT
 - user_id
@@ -86,27 +81,7 @@ table RECIPE_RATING
 
 
 
-browse
-- name or description (contain string as substring)
-- cuisine (contain string as substring)
-- contains only ingredients that i have (checkbox)
-- show private recipes
-- tags (checkboxes, intersection)
-- sort by:
-    - difficulty
-    - cook time
-    - rating
-    - date created
-
 home
 - login/register if not logged in
 - intro rubbish
 - browse recipes
-
-profile
-- user info
-- recipes (can edit/delete your own)
-- can see and edit your own ingredients
-
-recipe
-

@@ -6,58 +6,212 @@
 
 <div class="container text-center mx-auto mt-5">
 
-
-    <!--form id="search-form" method="post" role="form">
-        {{ form.csrf_token }}
-        <div class="row align-items-center m-2">
-            <div class="col-1">
-                {{ form.sort_rating.label(class_="h5 m-0") }}
-            </div>
-            <div class="col">
-                {{ form.sort_rating(class_="btn btn-lg btn-outline-primary rounded-pill dropdown-toggle search-dropdown") }}
-            </div>
-            <div class="col">
-                {{ form.submit_search(class_="form-control btn btn-lg btn-primary rounded-pill") }}
-            </div>
+    <form id="browse-recipe-form" method="post" role="form">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.search_text(class_="form-control form-control-lg rounded-pill") }}
         </div>
-
-        <div class="accordion" id="search-accordion">
+        <p class="my-3">...or use any of the filter options below:</p>
+        <div class="accordion" id="search-recipe-accordion">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="accordion-heading-one">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-one" aria-expanded="false" aria-controls="accordion-one">
-                    <strong>More Filter Options...</strong>
+                <h2 class="accordion-header" id="heading-zero">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-zero" aria-expanded="false" aria-controls="accordion-zero">
+                    <strong>Creator</strong>
                     </button>
                 </h2>
-                <div id="accordion-one" class="accordion-collapse collapse" aria-labelledby="accordion-heading-one" data-bs-parent="#search-accordion">
+                <div id="accordion-zero" class="accordion-collapse collapse" aria-labelledby="heading-zero">
                     <div class="accordion-body">
-                        {{ form.search_text(class_="form-control") }}
-                        {{ form.search_cuisine(class_="form-control") }}
+                        Search for recipes created by a specific user! (Make sure you are searching with the correct, most updated username.)
 
-                        {% if userinfo != None %}
-                            <div class="input-group mb-3">
-                                <div class="input-group-text">
-                                    {{ form.search_my_ingredients(class_="form-check-input mt-0") }}
-                                </div>
-                                {{ form.search_my_ingredients.label(class_="form-control") }}
-                                Recipes filtered will only contain ingredients that are currently in your inventory. Click <a href="/ingredients">here</a> to update your inventory.
-
-                                <div class="input-group-text">
-                                    {{ form.search_show_private(class_="form-check-input mt-0") }}
-                                </div>
-                                {{ form.search_show_private.label(class_="form-control") }}
-                                Recipes filtered will include recipes that have been marked as private (that you have access to), on top of public recipes.
-                            </div>
-                        {% endif %}
-                          
-                        {% for tag in search_tags %}
-                            {{ form.tag() }}
-                        {% endfor %}
+                        {{ form.search_creator(class_="form-control form-control-lg rounded-pill mt-2") }}
                     </div>
                 </div>
             </div>
-        </div>    
-    </form-->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-one">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-one" aria-expanded="false" aria-controls="accordion-one">
+                    <strong>Cuisine</strong>
+                    </button>
+                </h2>
+                <div id="accordion-one" class="accordion-collapse collapse" aria-labelledby="heading-one">
+                    <div class="accordion-body">
+                        Filter recipes from ANY of your selected cuisines! You may select more than one option.
+                        <br>
+                        If you do not select any cuisines, recipes from all cuisines will be displayed.
+                        
+                        <div class="form-group mx-3 mt-2">
+                            {% for choice in form.search_cuisine %}
+                                {{ choice(class_="btn-check") }}
+                                {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-two">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-two" aria-expanded="false" aria-controls="accordion-two">
+                    <strong>Other Filter Tags</strong>
+                    </button>
+                </h2>
+                <div id="accordion-two" class="accordion-collapse collapse" aria-labelledby="heading-two">
+                    <div class="accordion-body">
+                        <div class="col">
+                            {% if userinfo %}
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="input-group">
+                                        <div class="input-group-text input-group-checkbox">
+                                            {{ form.search_my_ingredients(class_="form-check-input")}}
+                                        </div>
+                                        {{ form.search_my_ingredients.label(class_="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    Filter by the ingredients that you currently have in your inventory. If you select this filter, the search results displayed will not require any ingredients that are currently outside your inventory.
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row align-items-center">
+                                <div class="col-3">
+                                    <div class="input-group">
+                                        <div class="input-group-text input-group-checkbox">
+                                            {{ form.search_show_private(class_="form-check-input")}}
+                                        </div>
+                                        {{ form.search_show_private.label(class_="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    By default, the search results displayed will only include public recipes. If you select this filter, the search results will also include the private recipes that you have access to.        
+                                </div>
+                            </div>
+                            <hr>
+                            {% endif %}
+                        </div>
+                        Filter recipes that satisfy ALL of your selected criteria! You may select more than one option.
+
+                        <div class="form-group mx-3 mt-2">
+                            {% for choice in form.search_tags %}
+                                {{ choice(class_="btn-check") }}
+                                {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-three">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-three" aria-expanded="false" aria-controls="accordion-three">
+                    <strong>Sorting</strong>
+                    </button>
+                </h2>
+                <div id="accordion-three" class="accordion-collapse collapse" aria-labelledby="heading-three">
+                    <div class="accordion-body">
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-1">
+                                {{ form.sort_attribute.label }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.sort_attribute(class_="form-select btn btn-outline-primary rounded-pill browse-dropdown")}}
+                            </div>
+
+                            <div class="col-1">
+                                {{ form.sort_direction.label }}
+                            </div>
+                            <div class="col-4">
+                                {{ form.sort_direction(class_="form-select btn btn-outline-primary rounded-pill browse-dropdown")}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ form.submit_search(class_="w-50 my-4 btn btn-lg btn-primary") }}
+    </form>
+
+    <nav>
+        <ul class="pagination">
+        
+            <li class="page-item {{'disabled' if 1 == pageNum else ''}}">
+                <a class="page-link" href="{{linkname}}page=1">First</a>
+            </li>
+            
+            {% for page in pages_to_display %}
+            <li class="page-item {{'active' if page == pageNum else ''}}">
+                <a class="page-link" href="{{linkname}}page={{page}}">{{page}}</a>
+            </li>
+            {% endfor %}
+            
+            <li class="page-item {{'disabled' if maxPage == pageNum else ''}}">
+                <a class="page-link" href="{{linkname}}page={{maxPage}}">Last</a>
+            </li>
     
+        </ul>
+    </nav>
+
+    <div class="row row-cols-1 row-cols-md-2 m-3 g-4 ">
+        {% if recipe_list == None or recipe_list|length == 0 %}
+            <div class="col w-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" fill="currentColor" class="bi bi-emoji-frown" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>
+                </svg>
+                <h4 class="m-5">No results found. Please try searching with different criteria.</h4>
+            </div>
+        {% else %}
+            {% for recipe in recipe_list %}
+                <div class="col m-2" style="width: 30%">
+                    <div class="card bg-secondary-subtle">
+                        <img src="{{ recipe['recipe_image'] }}" class="card-img-top" style="max-height: 200px; object-fit: cover;">
+                        <div class="card-body text-start">
+                            <h4 class="card-title">
+                                {{ recipe['recipe_name'] }}
+                            </h4>
+                            <p class="card-text">
+                                <b>Description:</b> {{ recipe['recipe_description'] }}<br>
+                                <b>Cooking Duration:</b> {{ recipe['recipe_cook_time'] }} hours<br>
+                                {% if recipe['recipe_difficulty'] == 0 %}
+                                    <span class="badge bg-success rounded-pill" >
+                                        Beginner
+                                    </span>
+                                {% elif recipe['recipe_difficulty'] == 1 %}
+                                    <span class="badge bg-warning rounded-pill text-dark">
+                                        Intermediate
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger rounded-pill">
+                                        Advanced
+                                    </span>
+                                {% endif %}
+                                {% if recipe['recipe_privacy'] %}
+                                    <span class="badge bg-danger-subtle rounded-pill text-dark" >
+                                        Private
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                                        </svg>
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success-subtle rounded-pill text-dark">
+                                        Public 
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-globe" viewBox="0 0 16 16">
+                                            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"/>
+                                        </svg>
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <a class="card-footer text-end" href="/recipe/{{recipe['recipe_id']}}">
+                            View Recipe
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
 </div>
 
 {% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %} Profile - {{profileinfo['user_username']}} {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container min-vh-100 d-flex flex-column justify-content-center m-auto w-50">
+
+    {% if userinfo and userinfo['user_id'] == profileinfo['user_id'] %}
+    <div class="card text-center">
+        <div class="card-header">
+            <h3>My Profile</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless table-sm">
+                <tbody>
+                <tr>
+                    <th scope="row"> Username </th>
+                    <td> {{ userinfo['user_username'] }} </td>
+                </tr><tr>
+                </tr><tr>
+                    <th scope="row"> Description </th>
+                    <td> {{ userinfo['user_description'] }} </td>
+                </tr><tr>
+                </tr><tr>
+                    <th scope="row"> Email </th>
+                    <td> {{ userinfo['user_email'] }} </td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-profile-modal">
+                Edit Profile
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg>
+            </button>
+
+            <p class="m-3">For password changes or account deletion, please contact the developer via the Feedback page.</p>
+
+            <a class="btn btn-primary m-3" href="/browserecipe?creator={{userinfo['user_id']}}" role="button">My Recipes</a>
+            <a class="btn btn-primary m-3" href="/browsecollection?creator={{userinfo['user_id']}}" role="button">My Collections</a>
+        </div>
+    </div>
+
+    {% else %}
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>{{profileinfo['user_username']}}'s Profile</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+					<tbody>
+					<tr>
+						<th scope="row"> Description </th>
+						<td> {{ profileinfo['user_description'] }} </td>
+                    </tr>
+                    </tbody>
+				</table>
+
+                <a class="btn btn-primary" href="/browserecipe?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['user_username']}}'s Recipes</a>
+                <a class="btn btn-primary" href="/browsecollection?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['user_username']}}'s Collections</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="modal fade" id="edit-profile-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editing Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="edit-profile-form" method="post" role="form">
+                    <div class="modal-body">
+                        {{ form.csrf_token }}
+                        <div class="form-floating m-4">
+                            {{ form.profile_username(class_="form-control", placeholder=userinfo.username) }}
+                            {{ form.profile_username.label }}
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ form.profile_description(class_="form-control", placeholder=userinfo.user_description) }}
+                            {{ form.profile_description.label }}
+                        </div>
+                        <div class="form-floating m-4">
+                            {{ form.profile_email(class_="form-control", placeholder=userinfo.user_email) }}
+                            {{ form.profile_email.label }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                        {{ form.profile_submit(class_="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

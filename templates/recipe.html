@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %} Recipe - {{recipeinfo['recipe_name']}} {% endblock %}
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid w-100 min-vh-100 d-flex flex-column justify-content-center m-auto w-50">
+
+    <div class="row m-5 justify-content-center">
+        <div class="col-8">
+            <h2>{{recipeinfo['recipe_name']}}</h2>
+            <img src="{{recipeinfo['recipe_image']}}" class="w-100">
+            <p>{{recipeinfo['recipe_description']}}</p>
+
+            <ol class="list-group list-group-numbered">
+                {% for instruction in recipeinfo['recipe_instructions'] %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">{{instruction[0]}}</div>
+                        {{instruction[1]}}
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="col-4">
+            <div class="accordion" id="recipe-accordion">
+                {% if userinfo and userinfo.user_id == recipeinfo.creator_id %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-zero">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-zero" aria-expanded="true" aria-controls="accordion-zero">
+                            <strong>Creator Options</strong>
+                            </button>
+                        </h2>
+                        <div id="accordion-zero" class="accordion-collapse collapse" aria-labelledby="heading-zero">
+                            <div class="accordion-body text-center">
+                                <a role="button" class="btn btn-outline-dark m-1" href="/editrecipe/{{recipeinfo.recipe_id}}">
+                                    Edit Recipe
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                    </svg>
+                                </a>
+                                <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#delete-recipe-modal">
+                                    Delete Recipe
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-one">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-one" aria-expanded="true" aria-controls="accordion-one">
+                        <strong>Ingredients</strong>
+                        </button>
+                    </h2>
+                    <div id="accordion-one" class="accordion-collapse collapse show" aria-labelledby="heading-one">
+                        <div class="accordion-body">
+                            <table class="table table-primary">
+                                <thead class="table-dark">
+                                    <th> <b>Ingredient</b> </td>
+                                    <th> <b>Quantity</b> </td>
+                                </thead>
+                                <tbody>
+                                {% for ingredient_name, quantity in [('a', 'b'), ('c', 'd'), ('eeee', 'ff')] %}
+                                <tr>
+                                    <td> {{ingredient_name}} </td>
+                                    <td> {{quantity}} </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-two">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-two" aria-expanded="false" aria-controls="accordion-two">
+                        <strong>Additional Information</strong>
+                        </button>
+                    </h2>
+                    <div id="accordion-two" class="accordion-collapse collapse" aria-labelledby="heading-two">
+                        <div class="accordion-body">
+                            - recipe_difficulty
+                            - recipe_cook_time
+                            - recipe_privacy
+                            - cuisines
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-recipe-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Deleting Recipe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the recipe titled "{{recipeinfo.recipe_name}}"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                    <form id="delete-recipe-form" method="post" role="form">
+                        {{ form.csrf_token }}
+                        {{ form.delete_recipe(class_="btn btn-danger") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
