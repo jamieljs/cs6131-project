@@ -5,6 +5,7 @@
 {% block content %}
 
 <div class="container min-vh-100 d-flex flex-column justify-content-center m-auto w-50">
+    <p class="text-center">(sample login details: username="username", password="password")</p>
     <div class="card text-center">
         <div class="card-header">
             <ul class="nav nav-tabs nav-justified card-header-tabs" id="login-page-tab" role="tablist">
@@ -59,15 +60,6 @@
                             <script>
                                 document.getElementById('reg_username').removeAttribute('minlength')
                             </script>
-                        </div>
-                        <div class="form-floating m-4">
-                            {{ registerForm.reg_email(class_="form-control" + (" is-invalid" if registerForm.reg_email.errors else "")) }}
-                            {{ registerForm.reg_email.label }}
-                            {% if registerForm.reg_email.errors %}
-                                {% for error in registerForm.reg_email.errors %}
-                                    <div class="invalid-feedback">{{ error }}</div>
-                                {% endfor %}
-                            {% endif %}
                         </div>
                         <div class="form-floating m-4">
                             {{ registerForm.reg_password(class_="form-control" + (" is-invalid" if registerForm.reg_password.errors else "")) }}

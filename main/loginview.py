@@ -27,18 +27,12 @@ def login():
         if registerForm.validate():
             result = request.form
             username = result['reg_username']
-            email = result['reg_email']
             password = result['reg_password']
             checkUser = tools.getUserInfoFromUsername(username)
             if checkUser == None:
-                checkUserEmail = tools.checkEmailExists(email)
-                if checkUserEmail:
-                    flash('This email address already has an associated account. Please try again', 'danger')
-                    return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
-                else:
-                    tools.login(tools.createUser(username, email, password))
-                    flash('Welcome, ' + str(username) + '!', 'success')
-                    return redirect('/')
+                tools.login(tools.createUser(username, password))
+                flash('Welcome, ' + str(username) + '!', 'success')
+                return redirect('/')
             else:
                 flash('This username is taken. Please try again.', 'danger')
                 return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')

@@ -1,87 +1,68 @@
-- given the ingredients you have and how many servings you want, give you a list of recipes you can make
-- filter by cuisine/taste/difficulty?
-- rating system (if time)
+rating: out of 5
+cook_time: hours
+image: url
+quantity: string
+tags: add diets, nonspicy, more allergies
 
-table COLLECTIONS
-- collection_id
-- collection_name
-- collection_description
-- collection_privacy
+- fix redirect fail on inventory and profile
 
-table RECIPE_COLLECTION
-- collection_id
-- recipe_id
-- user_id (creator)
+browsing recipe - 10-11
+- search in name/desc
+- search an ingredient (autocomplete)
+- search tags
+    - dietary: intersection
+    - cuisine: union
+    - others: union
+- search creator
+- filter favourites
+- filter by ingredients i have
+- sort difficulty/time/rating
 
-table RECIPES
-- recipe_id (number)
-- recipe_name
-- recipe_description
-- recipe_instructions
-- recipe_difficulty
-- recipe_cook_time (hours)
-- recipe_privacy
-- recipe_image (url)
+displaying recipe - 11-12
+- name
+- desc
+- image
+- difficulty
+- cook time
+- overall rating / rating summary chart thing
+- your rating (editable, toast when toggled)
+- ingredients (table)
+- associated tags: quite direct, basically what is there now
+- instructions (list)
+- creator + date created
+    - if not self: follow
+- favourite button (editable, toast when toggled)
 
-table INGREDIENTS
-- ingredient_id
-- ingredient_name
+editing recipe - 12-1
+- name
+- description
+- image
+- difficulty
+- cook time
+- tags
+    - dietary: fixed
+        - not found: feedback
+    - cuisines
+        - nav tab with dropdowns thingy for regions and optional subregions
+        - not found: feedback
+    - custom (not searchable but will be displayed)
+- ingredients (table, deletable, editable)
+    - enter quantity string + autocomplete search ingredient
+        - if ingredient id already exists in table, prevent
+- instructions (list, deletable, editable, reorderable)
+    - enter title + content
 
-table RECIPE_INGREDIENT
-- recipe_id
-- ingredient_id
-- quantity (string)
-
-table CUISINES
-- cuisine_id
-- cuisine_name
-
-table RECIPE_CUISINE
-- recipe_id
-- cuisine_id
-
-table RECIPE_VIEWERS
-- recipe_id
-- user_id
-
-table RECIPE_CREATOR
-- recipe_id
-- user_id
-
-table TAGS
-- tag_id
-- tag_name (spicy, vegetarian, allergens)
-- tag_icon
-
-table RECIPE_TAG
-- recipe_id
-- tag_id
-
-table USERS
-- user_id
-- user_username
-- user_password (hashed)
-- user_salt (for hash)
-- user_email
-- user_description
-
-table USER_INGREDIENT
-- user_id
-- ingredient_id
-
-table RECIPE_RATING
-- recipe_id
-- user_id
-- rating (out of 5)
+- check the rest of the form remains after submitting the toggle / just check the toggle works in general
+- populate a bit of legit sample data
 
 
+---end of assignment---
+
+- actually make tools work
+- only pass ['following'] to profile? and some other stuff like that
 
 
+---if time for proj---
 
 
-
-
-home
-- login/register if not logged in
-- intro rubbish
-- browse recipes
+- editing inventory items

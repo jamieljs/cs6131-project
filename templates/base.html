@@ -5,21 +5,16 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %}</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_bootstrap.css') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
         {% endblock %}
     </head>
     <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>    
-        <script>
-            function sidebarFunction() {
-                document.getElementById("sidebar").classList.toggle("active");
-                document.getElementById("content").classList.toggle("active");
-            }
-        </script>
         <div class="container-fluid row wrapper min-vh-100">
             <!-- Sidebar  -->
             <nav id="sidebar" class="col navbar-dark d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
@@ -64,26 +59,10 @@
                                 Recipes
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/browserecipe">Browse Recipes</a></li>
-                                <li><a class="dropdown-item" href="/browserecipe?creator={{userinfo['user_id']}}">My Recipes</a></li>
+                                <li><a class="dropdown-item" href="/browse">Browse Recipes</a></li>
+                                <li><a class="dropdown-item" href="/browse?creator={{userinfo['user_id']}}">My Recipes</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/createrecipe">Create New Recipe</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if currentPage and currentPage == 'collection' %} active {% endif %}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-journal-bookmark" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M6 8V1h1v6.117L8.743 6.07a.5.5 0 0 1 .514 0L11 7.117V1h1v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"/>
-                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
-                                </svg>
-                                Collections
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/browsecollection">Browse Collections</a></li>
-                                <li><a class="dropdown-item" href="/browsecollection?creator={{userinfo['user_id']}}">My Collections</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/createcollection">Create New Collection</a></li>
                             </ul>
                         </li>
                         <hr>
@@ -97,22 +76,12 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a href="/browserecipe" class="nav-link {% if currentPage and currentPage == 'recipe' %} active {% endif %}">
+                            <a href="/browse" class="nav-link {% if currentPage and currentPage == 'recipe' %} active {% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
                                     <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
                                     <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
                                 </svg>
                                 Browse Recipes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/browsecollection" class="nav-link {% if currentPage and currentPage == 'collection' %} active {% endif %}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-journal-bookmark" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M6 8V1h1v6.117L8.743 6.07a.5.5 0 0 1 .514 0L11 7.117V1h1v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8z"/>
-                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
-                                </svg>
-                                Browse Collections
                             </a>
                         </li>
                         <hr>
@@ -165,4 +134,23 @@
             </div>
         </div>
     </body>
+    <!-- persistent sidebar status -->
+    <script>
+        function sidebarFunction() {
+            document.querySelector("#sidebar").classList.toggle("active");
+            document.querySelector("#content").classList.toggle("active");
+            localStorage.setItem('menu-closed', document.querySelector("#sidebar").classList.contains('active'));
+            console.log(localStorage.getItem('menu-closed'));
+        }
+        var state = localStorage.getItem('menu-closed');
+        console.log(state);
+        if (state === null) {
+            localStorage.setItem('menu-closed', false);
+        } else {
+            if (state === "true") {
+                document.querySelector("#sidebar").classList.add("active");
+                document.querySelector("#content").classList.add("active");
+            }
+        }
+    </script>
 </html>

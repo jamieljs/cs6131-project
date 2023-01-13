@@ -8,7 +8,7 @@ def hashPassword(password, salt):
     salted = password + salt
     return hashlib.sha512(salted.encode('utf-8')).hexdigest()
 
-user_list = [{'user_id': 0, 'user_username': 'username', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_email': 'jamie.limjs@gmail.com', 'user_description': 'Hello there! I enjoy cooking :)'}]
+user_list = [{'user_id': 0, 'user_username': 'username', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}, {'user_id': 1, 'user_username': 'user2', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}]
 
 def login(user_info):
     session['profile'] = user_info
@@ -24,6 +24,8 @@ def getCurrentUserInfo():
     return None
 
 def getUserInfoFromUserId(user_id):
+    if not isinstance(user_id, int) or user_id < 0 or user_id >= len(user_list):
+        return None
     return user_list[user_id]
 
 def getUserInfoFromUsername(username):
@@ -32,33 +34,29 @@ def getUserInfoFromUsername(username):
             return user_list[i]
     return None
 
-def checkEmailExists(email):
-    for i in range(len(user_list)):
-        if user_list[i]['user_email'] == email:
-            return True
-    return False
-
 def checkPassword(userinfo, password):
     return (userinfo['user_password'] == hashPassword(password, userinfo['user_salt']))
 
-def createUser(username, email, password):
+def createUser(username, password):
     salt = uuid.uuid4().hex
     userinfo = {'user_id': len(user_list),
                 'user_username': username,
                 'user_password': hashPassword(password, salt),
                 'user_salt': salt,
-                'user_email': email,
                 'user_description': ''}
     user_list.append(userinfo)
     return userinfo
 
-def editProfile(user_id, username, description, email):
+def editProfile(user_id, username, description):
 
     return 0
 
+def toggleFollow(user_id, target_id):
+    pass
+
 # RECIPES
 
-recipe_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free')]
+recipe_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less')]
 recipe_list = [{'recipe_id': 0, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},
                {'recipe_id': 1, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': True, 'recipe_image': 'https://github.com/dvdg6566.png', 'recipe_creator': 1},
                {'recipe_id': 2, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 1, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},
@@ -70,6 +68,15 @@ saved_recipe_query_data = None
 
 def newRecipeSearchQuery(form_data):
     if form_data:
+        if 'search_creator_id' in form_data and form_data['search_creator_id'] != -1:
+            pass
+        else:
+            pass
+
+        if 'search_bookmarked' in form_data and form_data['search_bookmarked'] == 1:
+            pass
+        else:
+            pass
         temp_query_data = copy.deepcopy(recipe_list)
         # TODO: query based on form data
     else:
@@ -104,37 +111,23 @@ def getRecipeInfoFromRecipeId(recipe_id):
     # TODO: there is more to be done (merging from other tables) but recipe_list is overpowered for now
     return recipe_list[recipe_id]
 
-# COLLECTIONS
+def toggleBookmark(user_id, target_id):
+    pass
 
-collection_list = []
+# INVENTORY
 
-collection_per_page = 12
-saved_collection_query_data = None
+import datetime
 
-def newCollectionSearchQuery(form_data):
-    if form_data:
-        temp_query_data = copy.deepcopy(collection_list)
-        # TODO: query based on form data
-    else:
-        temp_query_data = copy.deepcopy(collection_list)
+def getInventoryOfUser(user_id):
+    return [{'ingredient_id':0,'ingredient_name':'sample ingredient 0','expiry_date':datetime.datetime.now().date()}, {'ingredient_id':1,'ingredient_name':'sample ingredient 1','expiry_date':datetime.datetime.now().date() - datetime.timedelta(days=1)}, {'ingredient_id':2,'ingredient_name':'sample ingredient 2','expiry_date':datetime.datetime.now().date() + datetime.timedelta(days=1)}]
 
-    saved_collection_query_data = []
+def addIngredientToInventory(user_id, ingredient_id, expiry_date):
+    '''if exists, dont add'''
+    pass
 
-    for collection in temp_query_data:
-        # TODO: processing
-        pass
-        
-    return saved_collection_query_data
+def removeIngredientFromInventory(user_id, ingredient_id, expiry_date):
+    '''if doesnt exist, do nothing'''
+    pass
 
-def getSavedCollectionQueryData():
-    return saved_collection_query_data
-
-# creates new collection, stores basic information, returns id
-def newCollection():
-    return 0
-
-def deleteCollection(collection_id):
-    return None
-
-def editCollection(collection_id):
-    return None
+def getIngredientNames():
+    return ['food1', 'kajdns', 'iaehc', 'fadsfjjncksjn4']

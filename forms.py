@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField, validators, widgets
-from wtforms.validators import InputRequired, Email, EqualTo, Length, ValidationError
+from wtforms import BooleanField, DateField, DecimalField, PasswordField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField, validators, widgets
+from wtforms.validators import InputRequired, EqualTo, Length, ValidationError
 import tools
 
 class MultiCheckboxField(SelectMultipleField):
@@ -20,7 +20,6 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     reg_username = StringField('Username', [InputRequired("Please enter a username."), Length(min=3)], render_kw={"placeholder": "username"})
-    reg_email = StringField('Email', [InputRequired("Please enter your email."), Email("This field requires a valid email address.")], render_kw={"placeholder": "email@example.com"})
     reg_password = PasswordField('Password', [InputRequired("Please enter a password."), Length(min=6, max=30), EqualTo("confirm_password", message="Passwords must match")], render_kw={"placeholder": "password"})
     confirm_password = PasswordField('Confirm Password', [InputRequired("Please confirm your password."), EqualTo("reg_password", message="Passwords must match")], render_kw={"placeholder": "confirm_password"})
     register = SubmitField('Register')
@@ -42,17 +41,29 @@ class RecipeQueryForm(FlaskForm):
 
     submit_search = SubmitField("Filter Recipes")
 
-class CollectionQueryForm(FlaskForm):
-    submit_search = SubmitField("Filter Collections")
-
 class DeleteRecipeForm(FlaskForm):
     delete_recipe = SubmitField("Delete Recipe")
 
-class DeleteCollectionForm(FlaskForm):
-    delete_collection = SubmitField("Delete Collection")
+class EditRecipeForm(FlaskForm):
+    recipe_name = StringField(None, [InputRequired()])
+    recipe_image = StringField()
+    recipe_description = TextAreaField()
+    # recipe_instructions
+    # recipe_ingredients
+    recipe_difficulty = SelectField()
+    recipe_cook_time = DecimalField()
+    recipe_privacy = BooleanField()
+    # recipe_viewers
+    recipe_cuisines = SelectMultipleField()
+    recipe_tags = SelectMultipleField()
+    recipe_submit = SubmitField()
 
 class EditProfileForm(FlaskForm):
     profile_username = StringField('Username', [InputRequired(), Length(min=3)])
     profile_description = TextAreaField('Description')
-    profile_email = StringField('Email', [InputRequired(), Email("This field requires a valid email address.")])
     profile_submit = SubmitField('Save Changes')
+
+class AddInventoryForm(FlaskForm):
+    inventory_ingredient = StringField('Search Ingredient Name (Autocomplete):', [InputRequired()])
+    expiry_date = DateField('Select Expiry Date:', [InputRequired()])
+    submit_add_inventory = SubmitField('Add Ingredient to Inventory')
