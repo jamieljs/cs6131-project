@@ -54,9 +54,12 @@ def editProfile(user_id, username, description):
 def toggleFollow(user_id, target_id):
     pass
 
+def getUserNames():
+    pass
+
 # RECIPES
 
-recipe_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less')]
+dietary_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less')]
 recipe_list = [{'recipe_id': 0, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},
                {'recipe_id': 1, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': True, 'recipe_image': 'https://github.com/dvdg6566.png', 'recipe_creator': 1},
                {'recipe_id': 2, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 1, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},

@@ -4,36 +4,24 @@ image: url
 quantity: string
 tags: add diets, nonspicy, more allergies
 
-- fix redirect fail on inventory and profile
 
-browsing recipe - 10-11
-- search in name/desc
-- search an ingredient (autocomplete)
-- search tags
-    - dietary: intersection
-    - cuisine: union
-    - others: union
-- search creator
-- filter favourites
-- filter by ingredients i have
-- sort difficulty/time/rating
-
-displaying recipe - 11-12
+displaying recipe
 - name
 - desc
 - image
+- number of portions
 - difficulty
 - cook time
 - overall rating / rating summary chart thing
-- your rating (editable, toast when toggled)
+- your rating (editable)
 - ingredients (table)
 - associated tags: quite direct, basically what is there now
 - instructions (list)
 - creator + date created
     - if not self: follow
-- favourite button (editable, toast when toggled)
+- favourite button (editable)
 
-editing recipe - 12-1
+editing recipe
 - name
 - description
 - image
@@ -43,7 +31,6 @@ editing recipe - 12-1
     - dietary: fixed
         - not found: feedback
     - cuisines
-        - nav tab with dropdowns thingy for regions and optional subregions
         - not found: feedback
     - custom (not searchable but will be displayed)
 - ingredients (table, deletable, editable)
@@ -52,17 +39,27 @@ editing recipe - 12-1
 - instructions (list, deletable, editable, reorderable)
     - enter title + content
 
+
+    
+
+- fix redirect fail on inventory and profile
+
+- test browse
+
+
 - check the rest of the form remains after submitting the toggle / just check the toggle works in general
-- populate a bit of legit sample data
+- populate a bit of small legit sample data
 
 
 ---end of assignment---
 
+- cuisines: nav tab with dropdowns thingy for regions and optional subregions
+
 - actually make tools work
 - only pass ['following'] to profile? and some other stuff like that
-
+- eventually change the cuisine search thing if there are more stuff
 
 ---if time for proj---
 
-
+- toast for follow/bookmark/rating
 - editing inventory items

@@ -62,7 +62,7 @@
                         <td class="align-middle">{{ingredient['ingredient_name']}}</td>
                         <td class="align-middle">{{ingredient['expiry_date']}}</td>
                         <td class="align-middle">
-                            <form action="" method="post" role="form">
+                            <form method="post" role="form">
                                 <input type="hidden" name="form_name" value="delete-ingredient">
                                 <input type="hidden" name="delete_ingredient_id" value="{{ingredient['ingredient_id']}}">
                                 <input type="hidden" name="delete_expiry_date" value="{{ingredient['expiry_date']}}">
@@ -75,7 +75,7 @@
                         <td class="align-middle">{{ingredient['ingredient_name']}}</td>
                         <td class="text-danger align-middle">{{ingredient['expiry_date']}}</td>
                         <td class="align-middle">
-                            <form action="" method="post" role="form">
+                            <form method="post" role="form">
                                 <input type="hidden" name="form_name" value="delete-ingredient">
                                 <input type="hidden" name="delete_ingredient_id" value="{{ingredient['ingredient_id']}}">
                                 <input type="hidden" name="delete_expiry_date" value="{{ingredient['expiry_date']}}">

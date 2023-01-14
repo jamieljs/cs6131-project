@@ -7,7 +7,7 @@ def profile(user_id):
     profileinfo = tools.getUserInfoFromUserId(user_id)
     if profileinfo == None:
         flash('Page could not be found!', 'warning')
-        redirect('/')
+        return redirect('/')
         
 
     form = EditProfileForm()

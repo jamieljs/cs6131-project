@@ -45,14 +45,14 @@ def browse():
             page = 1
         page = int(page)
     except:
-        redirect('/browse?page=1')
+        return redirect('/browse?page=1')
 
     num_recipes = len(recipe_list)
     recipe_per_page = tools.recipe_per_page
     max_page_num = max(ceil(num_recipes / recipe_per_page), 1)
 
     if page < 1 or page > max_page_num:
-        redirect('/browse?page=1')
+        return redirect('/browse?page=1')
 
     pages_to_display = range(max(1, page - 1), min(max_page_num, page + 2) + 1)
 
@@ -79,6 +79,7 @@ def browse():
         page = 1
         pages_to_display = range(1, min(max_page_num, 3) + 1)
 
-    print(recipe_list)
+    creator_usernames = tools.getUserNames()
+    ingredient_names = tools.getIngredientNames()
 
-    return render_template('browse.html', userinfo=userinfo, currentPage='recipe', form=form, linkname='/browse?', pageNum=page, maxPage=max_page_num, pages_to_display=pages_to_display, recipe_list=recipe_list)
+    return render_template('browse.html', userinfo=userinfo, currentPage='recipe', form=form, linkname='/browse?', pageNum=page, maxPage=max_page_num, pages_to_display=pages_to_display, recipe_list=recipe_list, creator_usernames=creator_usernames, ingredient_names=ingredient_names)

@@ -8,7 +8,7 @@ def editrecipe(recipe_id):
 
     if userinfo == None or userinfo['user_id'] != recipeinfo['recipe_creator']:
         flash('You do not have access this page!', 'warning')
-        redirect('/')
+        return redirect('/')
     
     form = EditRecipeForm()
 

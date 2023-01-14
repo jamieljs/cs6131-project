@@ -7,7 +7,7 @@ def inventory():
     userinfo = tools.getCurrentUserInfo()
     if userinfo == None:
         flash('You do not have access this page!', 'warning')
-        redirect('/')
+        return redirect('/')
     
     inventory = tools.getInventoryOfUser(userinfo['user_id'])
     ingredient_names = tools.getIngredientNames()

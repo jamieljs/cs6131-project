@@ -85,7 +85,7 @@
                     {{profileinfo['user_username']}}'s Profile
                 </h3>
                 {% if userinfo %}
-                    <form action="" id="toggle-follow-form" method="post" role="form">
+                    <form id="toggle-follow-form" method="post" role="form">
                         <input type="hidden" name="form_name" value="toggle-follow">
                         {% if profileinfo['user_id'] in userinfo['following'] %}
                             <button type="submit" class="btn btn-unfollow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>

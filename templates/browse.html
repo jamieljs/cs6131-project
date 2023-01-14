@@ -16,17 +16,36 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-zero">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-zero" aria-expanded="false" aria-controls="accordion-zero">
-                    <strong>Creator</strong>
+                    <strong>Autocomplete Filter Fields</strong>
                     </button>
                 </h2>
                 <div id="accordion-zero" class="accordion-collapse collapse" aria-labelledby="heading-zero">
                     <div class="accordion-body">
-                        Search for recipes created by a specific user! (Make sure you are searching with the correct, most updated username.)
-
-                        {{ form.search_creator(class_="form-control form-control-lg rounded-pill mt-2") }}
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-3 text-end">
+                                {{ form.search_creator.label }}
+                            </div>
+                            <div class="col-5 autocomplete">
+                                {{ form.search_creator(class_="form-control form-control-lg rounded-pill my-2 mx-auto", id="creator-input") }}
+                            </div>
+                        </div>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-3 text-end">
+                                {{ form.search_ingredient.label }}
+                            </div>
+                            <div class="col-5 autocomplete">
+                                {{ form.search_ingredient(class_="form-control form-control-lg rounded-pill my-2 mx-auto", id="ingredient-input") }}
+                            </div>
+                        </div>
+                        <p class="mt-2">If you cannot find someone's username, try checking whether they have updated their username!</p>
                     </div>
                 </div>
             </div>
+            <script src="{{url_for('static',filename='js/autocomplete.js')}}"></script>
+            <script>
+                autocomplete(document.getElementById("creator-input"), {{creator_usernames|tojson}});
+                autocomplete(document.getElementById("ingredient-input"), {{ingredient_names|tojson}});
+            </script>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-one">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-one" aria-expanded="false" aria-controls="accordion-one">
@@ -51,13 +70,32 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-two">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-two" aria-expanded="false" aria-controls="accordion-two">
-                    <strong>Other Filter Tags</strong>
+                    <strong>Dietary Requirements / Preferences</strong>
                     </button>
                 </h2>
                 <div id="accordion-two" class="accordion-collapse collapse" aria-labelledby="heading-two">
                     <div class="accordion-body">
+                        Filter recipes that satisfy ALL of your dietary requirements! You may select more than one option.
+
+                        <div class="form-group mx-3 mt-2">
+                            {% for choice in form.search_dietary %}
+                                {{ choice(class_="btn-check") }}
+                                {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if userinfo %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-three">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-three" aria-expanded="false" aria-controls="accordion-three">
+                    <strong>Other Filter Options</strong>
+                    </button>
+                </h2>
+                <div id="accordion-three" class="accordion-collapse collapse" aria-labelledby="heading-three">
+                    <div class="accordion-body">
                         <div class="col">
-                            {% if userinfo %}
                             <div class="row align-items-center">
                                 <div class="col-3">
                                     <div class="input-group">
@@ -76,36 +114,27 @@
                                 <div class="col-3">
                                     <div class="input-group">
                                         <div class="input-group-text input-group-checkbox">
-                                            {{ form.search_show_private(class_="form-check-input")}}
+                                            {{ form.search_bookmarked(class_="form-check-input")}}
                                         </div>
-                                        {{ form.search_show_private.label(class_="form-control") }}
+                                        {{ form.search_bookmarked.label(class_="form-control") }}
                                     </div>
                                 </div>
                                 <div class="col">
-                                    By default, the search results displayed will only include public recipes. If you select this filter, the search results will also include the private recipes that you have access to.        
+                                    Apply all the other filters on only the recipes that you have bookmarked. If you select this filter, recipes you have not bookmarked will not appear in the search results.
                                 </div>
                             </div>
-                            <hr>
-                            {% endif %}
-                        </div>
-                        Filter recipes that satisfy ALL of your selected criteria! You may select more than one option.
-
-                        <div class="form-group mx-3 mt-2">
-                            {% for choice in form.search_tags %}
-                                {{ choice(class_="btn-check") }}
-                                {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="accordion-item">
-                <h2 class="accordion-header" id="heading-three">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-three" aria-expanded="false" aria-controls="accordion-three">
+                <h2 class="accordion-header" id="heading-four">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-four" aria-expanded="false" aria-controls="accordion-four">
                     <strong>Sorting</strong>
                     </button>
                 </h2>
-                <div id="accordion-three" class="accordion-collapse collapse" aria-labelledby="heading-three">
+                <div id="accordion-four" class="accordion-collapse collapse" aria-labelledby="heading-four">
                     <div class="accordion-body">
                         <div class="row justify-content-center align-items-center">
                             <div class="col-1">
