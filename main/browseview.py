@@ -61,7 +61,8 @@ def browse():
     if form.validate_on_submit():
         result = request.form
         creator_info = tools.getUserInfoFromUsername(result['search_creator'])
-
+        '''
+        immutable bad
         if creator_info == None:
             result['search_creator_id'] = -1
         else:
@@ -71,6 +72,7 @@ def browse():
             result['search_bookmarked'] = 1
         else:
             result['search_bookmarked'] = 0
+        '''
         
         recipe_list = tools.newRecipeSearchQuery(result)
         num_recipes = len(recipe_list)

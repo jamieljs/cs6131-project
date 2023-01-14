@@ -17,8 +17,10 @@ def login(user_info):
 
 def getCurrentUserInfo():
     try:
-        user_id =  dict(session)['profile']['user_id']
-        user_info =  getUserInfoFromUserId(user_id)
+        print(session)
+        user_id =  session['profile']['user_id']
+        print(user_id)
+        user_info = getUserInfoFromUserId(user_id)
         return user_info
     except KeyError as e:
         return None

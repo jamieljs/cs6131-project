@@ -33,10 +33,10 @@
                     <th> <b>Quantity</b> </td>
                 </thead>
                 <tbody>
-                {% for ingredient_name, quantity in [('a', 'b'), ('c', 'd'), ('eeee', 'ff')] %}
+                {% for ingredient in recipeinfo['recipe_ingredients'] %}
                 <tr>
-                    <td> {{ingredient_name}} </td>
-                    <td> {{quantity}} </td>
+                    <td> {{ingredient['ingredient_name']}} </td>
+                    <td> {{ingredient['quantity']}} </td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -46,8 +46,8 @@
                 {% for instruction in recipeinfo['recipe_instructions'] %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                        <div class="fw-bold">{{instruction[0]}}</div>
-                        {{instruction[1]}}
+                        <div class="fw-bold">{{instruction['instruction_title']}}</div>
+                        {{instruction['instruction_subtitle']}}
                     </div>
                 </li>
                 {% endfor %}

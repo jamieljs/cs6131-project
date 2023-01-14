@@ -30,7 +30,7 @@ def logout():
 
 @app.route('/createrecipe')
 def createRecipe():
-    creator_id = tools.getCurrentUserInfo().user_id
+    creator_id = tools.getCurrentUserInfo()['user_id']
     recipe_id = tools.newRecipe(creator_id)
     return redirect('/editrecipe/' + str(recipe_id))
 
