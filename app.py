@@ -35,14 +35,4 @@ def createRecipe():
     return redirect('/editrecipe/' + str(recipe_id))
 
 if __name__ == '__main__':
-
-    app.run(debug=False)
-
-    '''
-    if len(sys.argv) <= 1 or sys.argv[1] != "develop":
-        print("DEPLOY MODE")
-        serve(app, host='0.0.0.0', port=5000, url_scheme='https', threads = 16)
-    else:
-        print("DEVELOP MODE")
-        app.run(debug=True, host='0.0.0.0', port=443)
-    '''
+    app.run(debug=False, host='127.0.0.1', port=5000)
