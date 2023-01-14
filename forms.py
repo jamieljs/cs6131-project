@@ -35,7 +35,7 @@ class RecipeQueryForm(FlaskForm):
     search_cuisine = MultiCheckboxField(None, choices=tools.cuisine_tags) # recipes shown can contain any chosen tag
     search_dietary = MultiCheckboxField(None, choices=tools.dietary_tags) # recipes shown must contain all chosen tags
     search_my_ingredients = BooleanField("Filter by my ingredients") # contains only ingredients that the user has; only if signed in
-    search_bookmarked = BooleanField("Show only bookedmarked recipes")
+    search_bookmarked = BooleanField("Show only bookmarked recipes")
 
     sort_attribute = SelectField("Sort by:", validators=[InputRequired()], choices=[('difficulty', 'Difficulty'), ('cooktime', 'Preparation and Cooking Duration'), ('rating', 'Rating')], default='no')
     sort_direction = SelectField("Order:", validators=[InputRequired()], choices=['None', 'Increasing', 'Decreasing'], default='None')
@@ -44,20 +44,6 @@ class RecipeQueryForm(FlaskForm):
 
 class DeleteRecipeForm(FlaskForm):
     delete_recipe = SubmitField("Delete Recipe")
-
-class EditRecipeForm(FlaskForm):
-    recipe_name = StringField(None, [InputRequired()])
-    recipe_image = StringField()
-    recipe_description = TextAreaField()
-    # recipe_instructions
-    # recipe_ingredients
-    recipe_difficulty = SelectField()
-    recipe_cook_time = DecimalField()
-    recipe_privacy = BooleanField()
-    # recipe_viewers
-    recipe_cuisines = SelectMultipleField()
-    recipe_tags = SelectMultipleField()
-    recipe_submit = SubmitField()
 
 class EditProfileForm(FlaskForm):
     profile_username = StringField('Username', [InputRequired(), Length(min=3)])

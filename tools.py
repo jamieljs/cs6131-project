@@ -101,7 +101,7 @@ def getSavedRecipeQueryData():
 # creates new recipe, stores basic information, returns id
 def newRecipe(creator_id):
     return_id = len(recipe_list)
-    recipe_list.append({'recipe_id':return_id, 'recipe_name':'Placeholder Recipe Name', 'recipe_description':'', 'recipe_instructions': [], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator':creator_id})
+    recipe_list.append({'recipe_id':return_id, 'recipe_name':'Placeholder Recipe Name', 'recipe_description':'', 'recipe_instructions': [], 'recipe_difficulty': None, 'recipe_cook_time': None, 'recipe_creator':creator_id})
     return return_id
 
 def deleteRecipe(recipe_id):
@@ -113,6 +113,12 @@ def editRecipe(recipe_id):
 def getRecipeInfoFromRecipeId(recipe_id):
     # TODO: there is more to be done (merging from other tables) but recipe_list is overpowered for now
     return recipe_list[recipe_id]
+
+def getRecipeRatings(recipe_id):
+    return [3, 1, 4, 1, 5]
+
+def updateRating(user_id, recipe_id, rating):
+    pass
 
 def toggleBookmark(user_id, target_id):
     pass

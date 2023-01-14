@@ -1,59 +1,20 @@
-rating: out of 5
-cook_time: hours
-image: url
-quantity: string
-tags: add diets, nonspicy, more allergies
-
-
-displaying recipe
-- name
-- desc
-- image
-- number of portions
-- difficulty
-- cook time
-- overall rating / rating summary chart thing
-- your rating (editable)
-- ingredients (table)
-- associated tags: quite direct, basically what is there now
-- instructions (list)
-- creator + date created
-    - if not self: follow
-- favourite button (editable)
-
 editing recipe
-- name
-- description
-- image
-- difficulty
-- cook time
 - tags
-    - dietary: fixed
+    - dietary/cuisines
         - not found: feedback
-    - cuisines
         - not found: feedback
     - custom (not searchable but will be displayed)
-- ingredients (table, deletable, editable)
-    - enter quantity string + autocomplete search ingredient
-        - if ingredient id already exists in table, prevent
-- instructions (list, deletable, editable, reorderable)
-    - enter title + content
 
-
-    
-
-- fix redirect fail on inventory and profile
 
 - test browse
-
-
 - check the rest of the form remains after submitting the toggle / just check the toggle works in general
 - populate a bit of small legit sample data
+    - tags: add diets, nonspicy, more allergies
 
 
 ---end of assignment---
 
-- cuisines: nav tab with dropdowns thingy for regions and optional subregions
+- cuisines: nav tab with dropdowns thingy for regions and optional subregions (support MORE cuisines)
 
 - actually make tools work
 - only pass ['following'] to profile? and some other stuff like that

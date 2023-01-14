@@ -2133,6 +2133,7 @@ progress {
 }
 .form-control:disabled {
   background-color: var(--bs-form-control-disabled-bg);
+  color: #6c757d;
   opacity: 1;
 }
 .form-control::file-selector-button {
@@ -2252,6 +2253,7 @@ textarea.form-control-lg {
   border-radius: 0.375rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none;
+  box-shadow: inset 0px 0px 6px 3px rgba(var(--bs-body-bg-rgb), 0.5);
 }
 @media (prefers-reduced-motion: reduce) {
   .form-select {
@@ -2269,6 +2271,7 @@ textarea.form-control-lg {
 }
 .form-select:disabled {
   background-color: var(--bs-form-control-disabled-bg);
+  color: #6c757d;
 }
 .form-select:-moz-focusring {
   color: transparent;
@@ -11722,6 +11725,41 @@ a.card-footer:hover, a.card-footer:focus {
 .browse-dropdown {
   text-align: left;
 }
+
+.rate {
+  float: left;
+}
+.rate:not(:checked) > input {
+  position:absolute;
+  top:-9999px;
+}
+.rate:not(:checked) > label {
+  float:right;
+  width:1em;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor:pointer;
+  font-size:48px;
+  color: var(--bs-tertiary-bg);
+}
+.rate:not(:checked) > label:before {
+  content: '★ ';
+}
+.rate > input:checked ~ label {
+  color: var(--bs-secondary);    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+  color: var(--bs-secondary-bg-subtle);  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+  color: var(--bs-secondary-text);
+}
+
 
 
 /* SIDEBAR */
