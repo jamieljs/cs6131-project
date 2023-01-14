@@ -7,7 +7,7 @@ def editrecipe(recipe_id):
     if recipeinfo == None:
         flash('Page could not be found!', 'warning')
         return redirect('/')
-    if userinfo == None or userinfo['user_id'] != recipeinfo['recipe_creator']:
+    if userinfo == None or userinfo['user_id'] != recipeinfo['creator_id']:
         flash('You do not have access this page!', 'warning')
         return redirect('/')
 
@@ -46,5 +46,6 @@ def editrecipe(recipe_id):
             pass
         else:
             flash('Recipe editing failed. Please try again.', 'danger')
+        return redirect('/editrecipe/' + str(recipe_id))
     
-    return render_template('editrecipe.html', userinfo=userinfo, recipeinfo=recipeinfo, currentPage='recipe', ingredient_names=ingredient_names)
+    return render_template('editrecipe.html', userinfo=userinfo, recipeinfo=recipeinfo, currentPage='recipe', ingredient_names=ingredient_names, cuisine_tags=tools.cuisine_tags, dietary_tags=tools.dietary_tags)

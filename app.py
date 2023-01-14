@@ -36,7 +36,7 @@ def createRecipe():
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(debug=False)
 
     '''
     if len(sys.argv) <= 1 or sys.argv[1] != "develop":

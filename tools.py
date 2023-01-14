@@ -1,6 +1,7 @@
 from flask import session
 import hashlib, uuid
 import copy
+import datetime
 
 # LOGIN / USERS
 
@@ -8,7 +9,7 @@ def hashPassword(password, salt):
     salted = password + salt
     return hashlib.sha512(salted.encode('utf-8')).hexdigest()
 
-user_list = [{'user_id': 0, 'user_username': 'username', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}, {'user_id': 1, 'user_username': 'user2', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}]
+user_list = [{'user_id': 0, 'user_username': 'username', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}, {'user_id': 1, 'user_username': 'user2', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking too :)'}]
 
 def login(user_info):
     session['profile'] = user_info
@@ -59,11 +60,13 @@ def getUserNames():
 
 # RECIPES
 
-dietary_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less')]
-recipe_list = [{'recipe_id': 0, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},
-               {'recipe_id': 1, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_privacy': True, 'recipe_image': 'https://github.com/dvdg6566.png', 'recipe_creator': 1},
-               {'recipe_id': 2, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 1, 'recipe_cook_time': 0.5, 'recipe_privacy': False, 'recipe_image': 'https://github.com/jamieljs.png', 'recipe_creator': 0},
-               {'recipe_id': 3, 'recipe_name': 'Sample Recipe', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': [('heading', 'some long text some long text some long text some long text some long text some long text'), ('second instruction', 'texttext')], 'recipe_difficulty': 2, 'recipe_cook_time': 3, 'recipe_privacy': False, 'recipe_image': 'https://github.com/dvdg6566.png', 'recipe_creator': 1}]
+fake_ingredients = [{'ingredient_id':0,'ingredient_name':'sample ingredient 1','quantity':'1 tablespoon'}, {'ingredient_id':1,'ingredient_name':'sample ingredient 2','quantity':'500g'}]
+fake_instructions = [{'instruction_index': 0, 'instruction_title':'heading', 'instruction_subtitle':'some long text some long text some long text some long text some long text some long text'}, {'instruction_index': 1, 'instruction_title':'second instruction', 'instruction_subtitle':'text text'}]
+dietary_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less'), ('nsp', 'Non-Spicy')]
+recipe_list = [{'recipe_id': 0, 'recipe_name': 'Sample Recipe 1', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': -1, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Oceanic'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 0, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
+               {'recipe_id': 1, 'recipe_name': 'Sample Recipe 2', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Western European', 'Central European'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 1, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
+               {'recipe_id': 2, 'recipe_name': 'Sample Recipe 3', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 1, 'recipe_cook_time': 1, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://foodrepublic.com.sg/wp-content/uploads/2018/05/2-1-1024x683.jpg', 'recipe_cuisines':['Western European', 'Central European'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 0, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
+               {'recipe_id': 3, 'recipe_name': 'Sample Recipe 4', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 2, 'recipe_cook_time': 3, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dessert-main-image-molten-cake-0fbd4f2.jpg', 'recipe_cuisines':['Caribbean'], 'recipe_dietary':['Egg-Free', 'Non-Spicy'], 'creator_id': 1, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5}]
 cuisine_tags = [('caf', 'Central African'), ('eaf', 'East African'), ('naf', 'North African'), ('saf', 'Southern African'), ('waf', 'West African'), ('nam', 'North American'), ('cam', 'Central American'), ('sam', 'South American'), ('car', 'Caribbean'), ('cas', 'Central Asian'), ('eas', 'East Asian'), ('sas', 'South Asian'), ('sea', 'Southeast Asian'), ('was', 'West Asian'), ('ceu', 'Central European'), ('eeu', 'Eastern European'), ('neu', 'Northern European'), ('seu', 'Southern European'), ('weu', 'Western European'), ('oce', 'Oceanic')]
 
 recipe_per_page = 12
@@ -101,7 +104,7 @@ def getSavedRecipeQueryData():
 # creates new recipe, stores basic information, returns id
 def newRecipe(creator_id):
     return_id = len(recipe_list)
-    recipe_list.append({'recipe_id':return_id, 'recipe_name':'Placeholder Recipe Name', 'recipe_description':'', 'recipe_instructions': [], 'recipe_difficulty': None, 'recipe_cook_time': None, 'recipe_creator':creator_id})
+    recipe_list.append({'recipe_id': return_id, 'recipe_name': 'Sample Recipe 1', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': -1, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Oceanic'], 'recipe_dietary':['Non-Spicy'], 'creator_id': creator_id, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5})
     return return_id
 
 def deleteRecipe(recipe_id):
@@ -115,7 +118,7 @@ def getRecipeInfoFromRecipeId(recipe_id):
     return recipe_list[recipe_id]
 
 def getRecipeRatings(recipe_id):
-    return [3, 1, 4, 1, 5]
+    return [1, 1, 0, 0, 0]
 
 def updateRating(user_id, recipe_id, rating):
     pass
@@ -125,10 +128,8 @@ def toggleBookmark(user_id, target_id):
 
 # INVENTORY
 
-import datetime
-
 def getInventoryOfUser(user_id):
-    return [{'ingredient_id':0,'ingredient_name':'sample ingredient 0','expiry_date':datetime.datetime.now().date()}, {'ingredient_id':1,'ingredient_name':'sample ingredient 1','expiry_date':datetime.datetime.now().date() - datetime.timedelta(days=1)}, {'ingredient_id':2,'ingredient_name':'sample ingredient 2','expiry_date':datetime.datetime.now().date() + datetime.timedelta(days=1)}]
+    return [{'ingredient_id':0,'ingredient_name':'sample ingredient 1','expiry_date':datetime.datetime.now().date()}, {'ingredient_id':1,'ingredient_name':'sample ingredient 2','expiry_date':datetime.datetime.now().date() - datetime.timedelta(days=1)}, {'ingredient_id':2,'ingredient_name':'food','expiry_date':datetime.datetime.now().date() + datetime.timedelta(days=1)}]
 
 def addIngredientToInventory(user_id, ingredient_id, expiry_date):
     '''if exists, dont add'''
@@ -139,4 +140,4 @@ def removeIngredientFromInventory(user_id, ingredient_id, expiry_date):
     pass
 
 def getIngredientNames():
-    return ['food1', 'kajdns', 'iaehc', 'fadsfjjncksjn4']
+    return ['sample ingredient 1', 'sample ingredient 2', 'food', 'abc', 'def', 'ghi', 'jkl']
