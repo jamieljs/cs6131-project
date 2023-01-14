@@ -10,7 +10,6 @@
     <form id="feedback-form" method="post" role="form">
         {{ form.csrf_token }}
         <div class="form-floating my-5">
-            
             {{ form.feedback_text(class_="form-control " + (" is-invalid" if form.feedback_text.errors else "")) }}
             {{ form.feedback_text.label }}
             {% if form.feedback_text.errors %}

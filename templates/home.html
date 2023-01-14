@@ -5,8 +5,10 @@
 
 {% block content %}
 
-<div class="container-fluid min-vh-100 d-flex flex-column justify-content-center text-center align-items-center m-auto w-75">
-    <h1>Welcome to the <img id="app-icon" style="width: 160px;" src="{{url_for('static', filename='app_name_text.png')}}"> App, a (very epic) repository of (very epic) recipes!</h1>
+<div class="container-fluid min-vh-100 d-flex flex-column justify-content-center text-center align-items-center my-3 mx-auto w-75" style="box-sizing:border-box;">
+    <h1>Welcome to the <img id="app-icon" style="width: 150px;" src="{{url_for('static', filename='app_name_text.png')}}"> App, a (very epic) repository of (very epic) recipes!</h1>
+
+    <img src="{{url_for('static', filename='chef_hat.png')}}" style="width:40%;">
 
     <div class="row w-100 d-flex flex-row justify-content-center">
         <div class="card w-25 m-3">
@@ -35,7 +37,7 @@
         </div>
     </div>
 
-    <h3 class="m-5">Happy Cooking!</h3>
+    <h3 class="m-3">Happy Cooking!</h3>
     
     {% if userinfo == None %}
         <a role="button" href="/login" class="btn btn-primary btn-lg w-50">Log In or Sign Up Here!</a>

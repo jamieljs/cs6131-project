@@ -6,6 +6,7 @@
 
 <div class="container text-center mx-auto mt-5">
 
+    <!-- Form for filtering results -->
     <form id="browse-recipe-form" method="post" role="form">
         {{ form.hidden_tag() }}
         <div class="form-group">
@@ -160,7 +161,6 @@
 
     <nav>
         <ul class="pagination">
-        
             <li class="page-item {{'disabled' if 1 == pageNum else ''}}">
                 <a class="page-link" href="{{linkname}}page=1">First</a>
             </li>
@@ -174,10 +174,10 @@
             <li class="page-item {{'disabled' if maxPage == pageNum else ''}}">
                 <a class="page-link" href="{{linkname}}page={{maxPage}}">Last</a>
             </li>
-    
         </ul>
     </nav>
 
+    <!-- Search results displayed -->
     <div class="row row-cols-1 row-cols-md-2 m-3 g-4 ">
         {% if recipe_list == None or recipe_list|length == 0 %}
             <div class="col w-100">

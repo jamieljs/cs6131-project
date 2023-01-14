@@ -8,6 +8,7 @@
 
     <div class="row m-5 justify-content-center">
         <div class="col-8">
+            <!-- name -->
             <h2>
                 {% if userinfo %}
                     <form id="toggle-bookmark-form" method="post" role="form">
@@ -24,9 +25,12 @@
                     {{recipeinfo['recipe_name']}}
                 {% endif %}
             </h2>
+            <!-- description -->
             <p>{{recipeinfo['recipe_description']}}</p>
+            <!-- image -->
             <img src="{{recipeinfo['recipe_image']}}" class="w-75 mx-auto mb-2 d-block">
 
+            <!-- ingredients -->
             <table class="table table-primary my-4">
                 <thead class="table-dark">
                     <th> <b>Ingredient</b> </td>
@@ -42,6 +46,7 @@
                 </tbody>
             </table>
 
+            <!-- instructions -->
             <ol class="list-group list-group-numbered">
                 {% for instruction in recipeinfo['recipe_instructions'] %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -56,6 +61,7 @@
         <div class="col-4">
             <div class="accordion" id="recipe-accordion">
                 {% if userinfo and userinfo['user_id'] == recipeinfo['creator_id'] %}
+                <!-- edit or delete -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-zero">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-zero" aria-expanded="true" aria-controls="accordion-zero">
@@ -80,6 +86,7 @@
                         </div>
                     </div>
                 {% endif %}
+                <!-- miscellaneous additional information -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-one">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-one" aria-expanded="true" aria-controls="accordion-one">
@@ -130,6 +137,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- rating -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-two">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-two" aria-expanded="false" aria-controls="accordion-two">
@@ -191,6 +199,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- tags -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-three">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-three" aria-expanded="false" aria-controls="accordion-three">
@@ -232,6 +241,7 @@
         </div>
     </div>
 
+    <!-- deletion confirmation -->
     <div class="modal fade" id="delete-recipe-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">

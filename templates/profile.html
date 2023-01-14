@@ -7,6 +7,7 @@
 <div class="container min-vh-100 d-flex flex-column justify-content-center m-auto w-75 p-5">
 
     {% if userinfo and userinfo['user_id'] == profileinfo['user_id'] %}
+
         <div class="card">
             <div class="card-header text-start">
                 <h3>My Profile</h3>
@@ -78,7 +79,8 @@
             </div>
         </div>
 
-    {% else %}
+    {% else %} <!-- not your own profile, cannot edit things / see followers etc. -->
+
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3>
@@ -100,6 +102,7 @@
                 <a class="btn btn-primary" href="/browse?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['user_username']}}'s Recipes</a>
             </div>
         </div>
+
     {% endif %}
 
     <div class="modal fade" id="edit-profile-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">

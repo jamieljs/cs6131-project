@@ -85,7 +85,7 @@
                         Search Ingredient Name (Autocomplete):
                     </div>
                     <div class="col-7 autocomplete">
-                        <input type="text" name="ingredient" class="form-control rounded-pill my-2 mx-auto" id="ingredient-input">
+                        <input type="text" name="ingredient" class="form-control rounded-pill my-2 mx-auto" required id="ingredient-input">
                     </div>
                 </div>
                 <div class="row justify-content-center align-items-center">
@@ -93,7 +93,7 @@
                         Quantity of Ingredient:
                     </div>
                     <div class="col-7">
-                        <input type="text" name="quantity" class="form-control rounded-pill my-2 mx-auto" id="quantity-input">
+                        <input type="text" name="quantity" class="form-control rounded-pill my-2 mx-auto" required id="quantity-input">
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -227,6 +227,7 @@
         </div>
     </div>
 
+    <!-- Only can edit one section at a time -->
     <script>
         var edit_btn_list = [
             document.querySelector("#name-edit"),
@@ -244,13 +245,16 @@
         ];
 
         function buttonVisibility(content, edit_btn, cancel_btn, submit_btn, original_value) {
-            edit_btn.onclick = function() {
+            var toggleDisables = function() {
                 content.toggleAttribute("disabled");
                 for (let i = 0; i < edit_btn_list.length; i++){
                     edit_btn_list[i].toggleAttribute("disabled");
                 }
                 cancel_btn.toggleAttribute("disabled");
                 submit_btn.toggleAttribute("disabled");
+            };
+            edit_btn.onclick = function() {
+                toggleDisables();
             };
             cancel_btn.onclick = function() {
                 if (content.nodeName == "SELECT") {
@@ -260,12 +264,7 @@
                 } else {
                     content.setAttribute("value", original_value);
                 }
-                content.toggleAttribute("disabled");
-                for (let i = 0; i < edit_btn_list.length; i++){
-                    edit_btn_list[i].toggleAttribute("disabled");
-                }
-                cancel_btn.toggleAttribute("disabled");
-                submit_btn.toggleAttribute("disabled");
+                toggleDisables();
             };
         }
         buttonVisibility(document.querySelector("#name-content"), document.querySelector("#name-edit"), document.querySelector("#name-cancel"), document.querySelector("#name-submit"), "{{recipeinfo['recipe_name']}}");
@@ -283,10 +282,9 @@
         buttonVisibility(document.querySelector("#cook-time-content"), document.querySelector("#cook-time-edit"), document.querySelector("#cook-time-cancel"), document.querySelector("#cook-time-submit"), "{{recipeinfo['recipe_cook_time']}}");
         buttonVisibility(document.querySelector("#difficulty-content"), document.querySelector("#difficulty-edit"), document.querySelector("#difficulty-cancel"), document.querySelector("#difficulty-submit"), "{{recipeinfo['recipe_difficulty']}}");
 
+        
         function buttonVisibilityWithCursor(content_id, edit_btn, cancel_btn, submit_btn) {
-            edit_btn.onclick = function() {
-                content_btn_list = $(content_id.concat(" :button"));
-                console.log(content_btn_list);
+            var toggleDisables = function() {
                 for (let i = 0; i < content_btn_list.length; i++) {
                     content_btn_list[i].toggleAttribute("disabled")
                 }
@@ -296,16 +294,13 @@
                 cancel_btn.toggleAttribute("disabled");
                 submit_btn.toggleAttribute("disabled");
             };
+            edit_btn.onclick = function() {
+                content_btn_list = $(content_id.concat(" :button"));
+                toggleDisables();
+            };
             cancel_btn.onclick = function() {
-                ontent_btn_list = $(content_id.concat(" :button"));
-                for (let i = 0; i < content_btn_list.length; i++) {
-                    content_btn_list[i].toggleAttribute("disabled")
-                }
-                for (let i = 0; i < edit_btn_list.length; i++){
-                    edit_btn_list[i].toggleAttribute("disabled");
-                }
-                cancel_btn.toggleAttribute("disabled");
-                submit_btn.toggleAttribute("disabled");
+                content_btn_list = $(content_id.concat(" :button"));
+                toggleDisables();
                 window.location.reload();
             };
         }

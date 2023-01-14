@@ -1,0 +1,591 @@
+/* Compiled the Bootstrap Sass with custom colours and made some edits (custom_bootstrap.css), then transferred the relevant changes to this new file */
+
+:root,
+[data-bs-theme=light] {
+    --bs-primary: #b3476f;
+    --bs-secondary: #47b28b;
+    --bs-light: #c8d4e9;
+    --bs-dark: #121b2b;
+    --bs-primary-rgb: 179, 71, 111;
+    --bs-secondary-rgb: 71, 178, 139;
+    --bs-light-rgb: 200, 212, 233;
+    --bs-dark-rgb: 18, 27, 43;
+    --bs-primary-text: #923a5a;
+    --bs-secondary-text: #3a9272;
+    --bs-primary-bg-subtle: #dba4b8;
+    --bs-secondary-bg-subtle: #a4dbc7;
+    --bs-light-bg-subtle: #e2e8f3;
+    --bs-dark-bg-subtle: #1a2942;
+    --bs-primary-border-subtle: #d08aa4;
+    --bs-secondary-border-subtle: #8ad0b7;
+    --bs-light-border-subtle: #b6c5e2;
+    --bs-dark-border-subtle: #1f2f4d;
+    --bs-body-bg-rgb: 200, 212, 233;
+    --bs-emphasis-color: #121b2b;
+    --bs-emphasis-color-rgb: 18, 27, 43;
+    --bs-secondary-bg: #e4eaf4;
+    --bs-secondary-bg-rgb: 228, 234, 244;
+    --bs-tertiary-bg: #f2f5fa;
+    --bs-tertiary-bg-rgb: 242, 245, 250;
+    --bs-body-bg: #c8d4e9;
+    --bs-body-bg-rgb: 200, 212, 233;
+    --bs-link-color: #b3476f;
+    --bs-link-color-rgb: 179, 71, 111;
+    --bs-link-hover-color: #8f3959;
+    --bs-link-hover-color-rgb: 143, 57, 89;
+    --bs-emphasis-color: #121b2b;
+    --bs-form-control-bg: var(--bs-light-bg-subtle);
+}
+
+/* tables */
+.table-primary {
+    --bs-table-bg: #f0dae2;
+    --bs-table-border-color: #d8c4cb;
+    --bs-table-striped-bg: #e4cfd7;
+    --bs-table-active-bg: #d8c4cb;
+    --bs-table-hover-bg: #decad1;
+}
+.table-dark {
+    --bs-table-bg: #121b2b;
+    --bs-table-border-color: #2a3240;
+    --bs-table-striped-bg: #1e2636;
+    --bs-table-active-bg: #2a3240;
+    --bs-table-hover-bg: #242c3b;
+}
+/* custom for sortable table (inventory) */
+.sortable th {
+    cursor: pointer;
+}  
+.sortable th:hover {
+    background-color: var(--bs-dark-bg-subtle)
+} 
+
+/* forms / inputs */
+.form-control, .form-select {
+    box-shadow: inset 0px 0px 6px 3px rgba(var(--bs-body-bg-rgb), 0.5);
+}
+.form-control:focus, .form-select:focus {
+    border-color: #d9a3b7;
+    box-shadow: 0 0 0 0.25rem rgba(179, 71, 111, 0.25);
+}
+.form-control:disabled, .form-select:disabled {
+    color: #6c757d;
+}
+.form-check-input:focus {
+    border-color: #d9a3b7;
+    box-shadow: 0 0 0 0.25rem rgba(179, 71, 111, 0.25);
+}
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.form-check-input[type=checkbox]:indeterminate {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.form-switch .form-check-input:focus {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d9a3b7'/%3e%3c/svg%3e");
+}
+.input-group-text.input-group-checkbox {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+/* buttons */
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #b3476f;
+    --bs-btn-border-color: #b3476f;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #983c5e;
+    --bs-btn-hover-border-color: #8f3959;
+    --bs-btn-focus-shadow-rgb: 190, 99, 133;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #8f3959;
+    --bs-btn-active-border-color: #863553;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #b3476f;
+    --bs-btn-disabled-border-color: #b3476f;
+}
+.btn-secondary {
+    --bs-btn-color: #000;
+    --bs-btn-bg: #47b28b;
+    --bs-btn-border-color: #47b28b;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #63be9c;
+    --bs-btn-hover-border-color: #59ba97;
+    --bs-btn-focus-shadow-rgb: 60, 151, 118;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #6cc1a2;
+    --bs-btn-active-border-color: #59ba97;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #000;
+    --bs-btn-disabled-bg: #47b28b;
+    --bs-btn-disabled-border-color: #47b28b;
+}
+.btn-light {
+    --bs-btn-color: #000;
+    --bs-btn-bg: #c8d4e9;
+    --bs-btn-border-color: #c8d4e9;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #aab4c6;
+    --bs-btn-hover-border-color: #a0aaba;
+    --bs-btn-focus-shadow-rgb: 170, 180, 198;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #a0aaba;
+    --bs-btn-active-border-color: #969faf;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #000;
+    --bs-btn-disabled-bg: #c8d4e9;
+    --bs-btn-disabled-border-color: #c8d4e9;
+}
+.btn-dark {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #121b2b;
+    --bs-btn-border-color: #121b2b;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #363d4b;
+    --bs-btn-hover-border-color: #2a3240;
+    --bs-btn-focus-shadow-rgb: 54, 61, 75;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #414955;
+    --bs-btn-active-border-color: #2a3240;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #121b2b;
+    --bs-btn-disabled-border-color: #121b2b;
+}
+.btn-outline-primary {
+    --bs-btn-color: #b3476f;
+    --bs-btn-border-color: #b3476f;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #b3476f;
+    --bs-btn-hover-border-color: #b3476f;
+    --bs-btn-focus-shadow-rgb: 179, 71, 111;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #b3476f;
+    --bs-btn-active-border-color: #b3476f;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #b3476f;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #b3476f;
+    --bs-gradient: none;
+}
+.btn-outline-secondary {
+    --bs-btn-color: #47b28b;
+    --bs-btn-border-color: #47b28b;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #47b28b;
+    --bs-btn-hover-border-color: #47b28b;
+    --bs-btn-focus-shadow-rgb: 71, 178, 139;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #47b28b;
+    --bs-btn-active-border-color: #47b28b;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #47b28b;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #47b28b;
+    --bs-gradient: none;
+}
+.btn-outline-light {
+    --bs-btn-color: #c8d4e9;
+    --bs-btn-border-color: #c8d4e9;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #c8d4e9;
+    --bs-btn-hover-border-color: #c8d4e9;
+    --bs-btn-focus-shadow-rgb: 200, 212, 233;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #c8d4e9;
+    --bs-btn-active-border-color: #c8d4e9;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #c8d4e9;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #c8d4e9;
+    --bs-gradient: none;
+}
+.btn-outline-dark {
+    --bs-btn-color: #121b2b;
+    --bs-btn-border-color: #121b2b;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #121b2b;
+    --bs-btn-hover-border-color: #121b2b;
+    --bs-btn-focus-shadow-rgb: 18, 27, 43;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #121b2b;
+    --bs-btn-active-border-color: #121b2b;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #121b2b;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #121b2b;
+    --bs-gradient: none;
+}
+.btn-unfollow {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #b3476f;
+    --bs-btn-border-color: #b3476f;
+  
+    --bs-btn-hover-color: #b3476f;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: #b3476f;
+    
+    --bs-btn-focus-shadow-rgb: 179, 71, 111;
+  
+    --bs-btn-active-color: #8f3959;
+    --bs-btn-active-bg: rgba(0,0,0,0.1);
+    --bs-btn-active-border-color: #8f3959;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #b3476f;
+    --bs-btn-disabled-border-color: #b3476f;
+}
+.btn-follow {
+    --bs-btn-color: #b3476f;
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #b3476f;
+  
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #b3476f;
+    --bs-btn-hover-border-color: #b3476f;
+    
+    --bs-btn-focus-shadow-rgb: 190, 99, 133;
+  
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #983c5e;
+    --bs-btn-active-border-color: #8f3959;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  
+    --bs-btn-disabled-color: #b3476f;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #b3476f;
+    --bs-gradient: none;
+}
+.btn-following {
+    --bs-btn-font-weight: 400;
+    --bs-btn-color: var(--bs-link-color);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: var(--bs-link-color);
+    --bs-btn-hover-color: var(--bs-link-hover-color);
+    --bs-btn-hover-border-color: var(--bs-link-hover-color);
+    --bs-btn-active-color: var(--bs-link-hover-color);
+    --bs-btn-active-border-color: var(--bs-link-hover-color);
+    --bs-btn-disabled-color: #6c757d;
+    --bs-btn-disabled-border-color: #6c757d;
+    --bs-btn-box-shadow: none;
+    --bs-btn-focus-shadow-rgb: 190, 99, 133;
+    text-decoration: underline;
+}
+.btn-link {
+    --bs-btn-focus-shadow-rgb: 190, 99, 133;
+}
+.btn-close {
+    --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(179, 71, 111, 0.25);
+}
+
+/* dropdown */
+.dropdown-menu {
+    --bs-dropdown-link-active-bg: var(--bs-primary);
+}
+.dropdown-menu-dark {
+    --bs-dropdown-link-active-bg: var(--bs-primary);
+}
+/* custom for browse page */
+.browse-dropdown {
+    text-align: left;
+}
+
+/* navigation */
+.nav-pills {
+    --bs-nav-pills-link-active-bg: var(--bs-primary);
+}
+
+/* card */
+.card {
+    --bs-card-box-shadow: rgba(0, 0, 0, 0.23) 0px 2px 4px;
+    box-shadow: var(--bs-card-box-shadow);
+}
+/* custom for recipe browsing */
+a.card-footer {
+    color: var(--bs-link-color);
+    text-decoration: var(--bs-link-decoration);
+}
+a.card-footer:hover, a.card-footer:focus {
+    color: var(--bs-link-hover-color);
+    box-shadow: rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+/* accordion */
+.accordion {
+    --bs-accordion-bg: var(--bs-light-bg-subtle);
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23923a5a'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    --bs-accordion-btn-focus-border-color: #d9a3b7;
+    --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgba(179, 71, 111, 0.25);  
+}
+
+/* pagination */
+.pagination {
+    --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(179, 71, 111, 0.25);
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-pagination-active-border-color: var(--bs-primary);  
+}
+
+/* list group */
+.list-group {
+    --bs-list-group-border-color: var(--bs-dark-border-subtle);
+    --bs-list-group-active-bg: var(--bs-primary);
+    --bs-list-group-active-border-color: var(--bs-primary);
+}
+
+/* text colours */
+.text-bg-primary {
+    color: #fff !important;
+    background-color: RGBA(179, 71, 111, var(--bs-bg-opacity, 1)) !important;
+} 
+.text-bg-secondary {
+    color: #000 !important;
+    background-color: RGBA(71, 178, 139, var(--bs-bg-opacity, 1)) !important;
+}
+.text-bg-light {
+    color: #000 !important;
+    background-color: RGBA(200, 212, 233, var(--bs-bg-opacity, 1)) !important;
+}
+.text-bg-dark {
+    color: #fff !important;
+    background-color: RGBA(18, 27, 43, var(--bs-bg-opacity, 1)) !important;
+}
+.link-primary {
+    color: var(--bs-primary) !important;
+}
+.link-primary:hover, .link-primary:focus {
+    color: var(--bs-link-hover-color) !important;
+}
+.link-secondary {
+    color: var(--bs-secondary) !important;
+}
+.link-secondary:hover, .link-secondary:focus {
+    color: #6cc1a2 !important;
+}
+.link-light {
+    color: #c8d4e9 !important;
+}
+.link-light:hover, .link-light:focus {
+    color: #d3dded !important;
+}
+.link-dark {
+    color: #121b2b !important;
+}
+.link-dark:hover, .link-dark:focus {
+    color: #0e1622 !important;
+}
+
+/* autocomplete (adapted from tutorial, see autocomplete.js) */
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid var(--bs-primary);
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: var(--bs-body-bg);
+}
+.autocomplete-items div:hover {
+    background-color: var(--bs-dark-bg-subtle) !important;
+    color: white;
+}
+.autocomplete-active {
+    background-color: var(--bs-dark) !important;
+    color: white;
+}
+  
+/* rating (adapted from tutorial) */
+.rate {
+    float: left;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:48px;
+    color: var(--bs-tertiary-bg);
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: var(--bs-secondary);    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: var(--bs-secondary-bg-subtle);  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: var(--bs-secondary-text);
+}
+  
+/* sidebar (heavily adapted from tutorial https://bootstrapious.com/p/bootstrap-sidebar) */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#content {
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(100% - 280px);
+}
+
+#content.active {
+    width: calc(100% - 100px);
+}
+
+#sidebar {
+    min-width: 280px;
+    max-width: 280px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 8px 0px 16px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+
+#sidebar #close-menu-icon {
+    display: block;
+}
+#sidebar #open-menu-icon {
+    display: none;
+}
+
+#sidebar.active #close-menu-icon {
+    display: none;
+}
+#sidebar.active #open-menu-icon {
+    display: block;
+}
+
+#sidebar .sidebar-header strong {
+    display: none;
+}
+#sidebar.active .sidebar-header a {
+    display: none;
+}
+#sidebar.active .sidebar-header strong {
+    display: block;
+}
+  
+#sidebar ul li.nav-item a {
+    text-align: left;
+}
+  
+#sidebar.active ul li.nav-item a {
+    padding: 16px 4px;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+/* Same dropdown links padding*/
+#sidebar.active ul ul a {
+    padding: 10px !important;
+}
+
+#sidebar ul li a svg {
+    margin: 0;
+    margin-right: 4px;
+}
+#sidebar.active ul li a svg {
+    margin: 4px;
+}
+
+/* Changing the arrow position to bottom center position, 
+translateX(50%) works with right: 50% 
+to accurately  center the arrow */
+#sidebar.active .dropdown-toggle {
+    white-space: inherit;
+}
+#sidebar.active .dropdown-toggle::after {
+    position: absolute;
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
+
+@media (max-width: 768px) {
+    .sidebar-collapse-btn {
+        display: none;
+    }
+    #sidebar #app-icon {
+        content: url('../app_icon.png');
+        max-width: 40px;
+    }
+  
+    #sidebar {
+        min-width: 110px;
+        max-width: 110px;
+        text-align: center;
+    }
+  
+    #sidebar .sidebar-header h3 {
+        display: none;
+    }
+    #sidebar .sidebar-header strong {
+        display: block;
+    }
+  
+    /* Downsize the navigation links font size */
+    #sidebar ul li.nav-item a {
+        padding: 16px 4px;
+        font-size: 0.8em;
+        text-align: center;
+    }
+  
+    #sidebar ul li.nav-item a svg {
+        margin: 4px;
+    }
+  
+    /* Changing the arrow position to bottom center position, 
+      translateX(50%) works with right: 50% 
+      to accurately  center the arrow */
+    .dropdown-toggle {
+        white-space: inherit;
+    }
+    .dropdown-toggle::after {
+        position: absolute;
+        top: auto;
+        bottom: 10px;
+        right: 50%;
+        -webkit-transform: translateX(50%);
+        -ms-transform: translateX(50%);
+        transform: translateX(50%);
+    }
+}
