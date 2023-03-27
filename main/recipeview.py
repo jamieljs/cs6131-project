@@ -3,7 +3,10 @@ from forms import DeleteRecipeForm
 import tools
 
 def recipe(recipe_id):
-    userinfo = tools.getCurrentUserInfo()
+    if 'loggedin' in session:
+        userid = session['id']
+    else:
+        userid = None
     recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
     if recipeinfo == None:
         flash('Page could not be found!', 'warning')
@@ -17,27 +20,24 @@ def recipe(recipe_id):
 
     result = request.form
     if 'form_name' in result and result['form_name'] == 'toggle-follow':
-        tools.toggleFollow(userinfo['user_id'], recipeinfo['creator_id'])
-        userinfo = tools.getCurrentUserInfo()
+        tools.toggleFollow(userid, recipeinfo['creator_id'])
     elif 'form_name' in result and result['form_name'] == 'toggle-bookmark':
-        tools.toggleBookmark(userinfo['user_id'], recipeinfo['recipe_id'])
-        userinfo = tools.getCurrentUserInfo()
+        tools.toggleBookmark(userid, recipeinfo['recipe_id'])
         recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
     elif 'form_name' in result and result['form_name'] == 'rating':
         if 'ratings' in result:
             rating = result['ratings']
-            tools.updateRating(userinfo['user_id'], recipeinfo['recipe_id'], rating)
+            tools.updateRating(userid, recipeinfo['recipe_id'], rating)
             flash('Rating added', 'success')
         else:
-            tools.updateRating(userinfo['user_id'], recipeinfo['recipe_id'], None)
+            tools.updateRating(userid, recipeinfo['recipe_id'], None)
             flash('Rating removed!', 'success')
-        userinfo = tools.getCurrentUserInfo()
         recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
     elif form.is_submitted():
         if form.delete_recipe.data and form.validate():
-            tools.deleteRecipe(recipeinfo.recipe_id)
-            return redirect('/browse?creator=' + userinfo.user_id)
+            tools.deleteRecipe(recipeinfo['recipe_id'])
+            return redirect('/browse?creator=' + userid)
         else:
             flash('Recipe deletion failed. Please try again.', 'danger')
 
-    return render_template('recipe.html', userinfo=userinfo, recipeinfo=recipeinfo, form=form, currentPage='recipe', recipe_ratings=recipe_ratings, num_reviews=num_reviews)
+    return render_template('recipe.html', user_is_following_creator=tools.isFollowingProfile(recipeinfo['creator_id']), user_bookmarked_recipe=tools.bookmarkedRecipe(recipeinfo['recipe_id']), recipeinfo=recipeinfo, form=form, recipe_ratings=recipe_ratings, num_reviews=num_reviews)

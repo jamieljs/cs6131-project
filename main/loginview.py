@@ -3,8 +3,7 @@ from forms import LoginForm, RegisterForm
 import tools
 
 def login():
-    userinfo = tools.getCurrentUserInfo()
-    if userinfo != None and userinfo['user_id'] != '':
+    if 'loggedin' in session:
         flash('Please log out before trying to log in!', 'warning')
         return redirect('/')
     loginForm = LoginForm()
@@ -13,30 +12,19 @@ def login():
     if loginForm.is_submitted() and loginForm.login.data:
         if loginForm.validate():
             result = request.form
-            username = result['username']
-            password = result['password']
-            checkUser = tools.getUserInfoFromUsername(username)
-            if checkUser != None:
-                if checkUser['user_username'] == username and tools.checkPassword(checkUser, password):
-                    tools.login(checkUser)
-                    flash('Welcome back, ' + str(username) + '!', 'success')
-                    return redirect('/')
-        flash('Login failed. Please try again.', 'danger')
-        return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='login')
-    elif registerForm.is_submitted() and registerForm.register.data:
+            if tools.login(result['username'], result['password']):
+                return redirect('/')
+        else:
+            flash('Login failed. Please try again.', 'danger')
+    elif registerForm.is_submitted() and registerForm.login.data:
         if registerForm.validate():
             result = request.form
             username = result['reg_username']
             password = result['reg_password']
-            checkUser = tools.getUserInfoFromUsername(username)
-            if checkUser == None:
-                tools.login(tools.createUser(username, password))
-                flash('Welcome, ' + str(username) + '!', 'success')
+            if tools.register(username, password):
                 return redirect('/')
-            else:
-                flash('This username is taken. Please try again.', 'danger')
-                return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
-        flash('Registration failed. Please try again.', 'danger')
+        else:
+            flash('Registration failed. Please try again.', 'danger')
         return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='register')
-        
+
     return render_template('login.html', loginForm = loginForm, registerForm = registerForm, pageType='login')

@@ -10,12 +10,12 @@
         <div class="col-8">
             <!-- name -->
             <h2>
-                {% if userinfo %}
+                {% if 'loggedin' in session %}
                     <form id="toggle-bookmark-form" method="post" role="form">
                         {{recipeinfo['recipe_name']}}
 
                         <input type="hidden" name="form_name" value="toggle-bookmark">
-                        {% if recipeinfo['recipe_id'] in userinfo['bookmarks'] %}
+                        {% if user_bookmarked_recipe %}
                             <button type="submit" class="btn btn-unfollow btn-lg ms-2">Remove Bookmark <i class="bi bi-bookmark-star-fill ms-1"></i></button>
                         {% else %}
                             <button type="submit" class="btn btn-follow btn-lg ms-2">Bookmark <i class="bi bi-bookmark-plus ms-1"></i></button>
@@ -26,7 +26,7 @@
                 {% endif %}
             </h2>
             <!-- description -->
-            <p>{{recipeinfo['recipe_description']}}</p>
+            <p>{{recipeinfo['recipe_desc']}}</p>
             <!-- image -->
             <img src="{{recipeinfo['recipe_image']}}" class="w-75 mx-auto mb-2 d-block">
 
@@ -37,7 +37,7 @@
                     <th> <b>Quantity</b> </td>
                 </thead>
                 <tbody>
-                {% for ingredient in recipeinfo['recipe_ingredients'] %}
+                {% for ingredient in recipeinfo['ingredients'] %}
                 <tr>
                     <td> {{ingredient['ingredient_name']}} </td>
                     <td> {{ingredient['quantity']}} </td>
@@ -48,7 +48,7 @@
 
             <!-- instructions -->
             <ol class="list-group list-group-numbered">
-                {% for instruction in recipeinfo['recipe_instructions'] %}
+                {% for instruction in recipeinfo['instructions'] %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">{{instruction['instruction_title']}}</div>
@@ -60,7 +60,7 @@
         </div>
         <div class="col-4">
             <div class="accordion" id="recipe-accordion">
-                {% if userinfo and userinfo['user_id'] == recipeinfo['creator_id'] %}
+                {% if 'loggedin' in session and session['id'] == recipeinfo['creator_id'] %}
                 <!-- edit or delete -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-zero">
@@ -70,7 +70,7 @@
                         </h2>
                         <div id="accordion-zero" class="accordion-collapse collapse show" aria-labelledby="heading-zero">
                             <div class="accordion-body text-center">
-                                <a role="button" class="btn btn-outline-dark m-1" href="/editrecipe/{{recipeinfo.recipe_id}}">
+                                <a role="button" class="btn btn-outline-dark m-1" href="{{url_for('editrecipe', recipe_id=recipeinfo['recipe_id'])}}">
                                     Edit Recipe
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
@@ -95,11 +95,11 @@
                     </h2>
                     <div id="accordion-one" class="accordion-collapse collapse show" aria-labelledby="heading-one">
                         <div class="accordion-body">
-                            {% if userinfo and userinfo['user_id'] != recipeinfo['creator_id'] %}
+                            {% if 'loggedin' in session and session['id'] != recipeinfo['creator_id'] %}
                                 <form id="toggle-follow-form" method="post" role="form">
-                                    <b>Created by:</b> {{ recipeinfo['creator_id'] }}
+                                    <b>Created by:</b> <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a>
                                     <input type="hidden" name="form_name" value="toggle-follow">
-                                    {% if recipeinfo['creator_id'] in userinfo['following'] %}
+                                    {% if user_is_following_creator %}
                                         <button type="submit" class="btn btn-unfollow ms-2">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
                                     {% else %}
                                         <button type="submit" class="btn btn-follow ms-2">Follow <i class="bi bi-star ms-1"></i></button>
@@ -108,24 +108,24 @@
                                     <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small>
                                 </form>
                             {% else %}
-                                <b>Created by:</b> {{ recipeinfo['creator_id'] }}<br>
-                                <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small>
+                                <b>Created by:</b> <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a><br>
+                                <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small><br>
                             {% endif %}
 
-                            <b>Estimated number of portions:</b> {{ recipeinfo['recipe_num_portions'] }}<br>
-                            {% if recipeinfo['recipe_cook_time'] != None %}
-                                <b>Cooking Duration:</b> {{ recipeinfo['recipe_cook_time'] }} hours<br>
+                            <b>Estimated number of portions:</b> {{ recipeinfo['num_portions'] }}<br>
+                            {% if recipeinfo['cook_time'] != None %}
+                                <b>Cooking Duration:</b> {{ recipeinfo['cook_time'] }} hours<br>
                             {% endif %}
                             <br>
-                            {% if recipeinfo['recipe_difficulty'] == 0 %}
+                            {% if recipeinfo['difficulty'] == 0 %}
                                 <span class="badge bg-success rounded-pill" >
                                     Beginner
                                 </span>
-                            {% elif recipeinfo['recipe_difficulty'] == 1 %}
+                            {% elif recipeinfo['difficulty'] == 1 %}
                                 <span class="badge bg-warning rounded-pill text-dark">
                                     Intermediate
                                 </span>
-                            {% elif recipeinfo['recipe_difficulty'] == 2 %}
+                            {% elif recipeinfo['difficulty'] == 2 %}
                                 <span class="badge bg-danger rounded-pill">
                                     Advanced
                                 </span>
@@ -147,7 +147,7 @@
                     <div id="accordion-two" class="accordion-collapse collapse" aria-labelledby="heading-two">
                         <div class="accordion-body">
 
-                            <h4>Rating: {{recipeinfo['recipe_rating']}}</h4>
+                            <h4>Rating: {{recipeinfo['rating']}}</h4>
                             <small class="text-muted">Based on {{num_reviews}} reviews</small>
                             <canvas id="rating-canvas" style="box-sizing:border-box;" class="d-block mx-0 h-auto"></canvas>
                             <script>
@@ -208,27 +208,27 @@
                     </h2>
                     <div id="accordion-three" class="accordion-collapse collapse" aria-labelledby="heading-three">
                         <div class="accordion-body">
-                            {% if recipeinfo['recipe_cuisines'] and recipeinfo['recipe_cuisines']|length != 0 %}
+                            {% if recipeinfo['cuisines'] and recipeinfo['cuisines']|length != 0 %}
                                 <b>Cuisines:</b>
-                                {% for cuisine in recipeinfo['recipe_cuisines'] %}
+                                {% for cuisine in recipeinfo['cuisines'] %}
                                     <span class="badge bg-primary-subtle text-black rounded-pill" >
                                         {{cuisine}}
                                     </span>
                                 {% endfor %}
                                 <br>
                             {% endif %}
-                            {% if recipeinfo['recipe_dietary'] and recipeinfo['recipe_dietary']|length != 0 %}
+                            {% if recipeinfo['dietary'] and recipeinfo['dietary']|length != 0 %}
                                 <b>Dietary Restrictions:</b>
-                                {% for tag in recipeinfo['recipe_dietary'] %}
+                                {% for tag in recipeinfo['dietary'] %}
                                     <span class="badge bg-secondary-subtle text-black rounded-pill" >
                                         {{tag}}
                                     </span>
                                 {% endfor %}
                                 <br>
                             {% endif %}
-                            {% if recipeinfo['recipe_tags'] and recipeinfo['recipe_tags']|length != 0 %}
+                            {% if recipeinfo['tags'] and recipeinfo['tags']|length != 0 %}
                                 <b>Other Tags:</b>
-                                {% for tag in recipeinfo['recipe_tags'] %}
+                                {% for tag in recipeinfo['tags'] %}
                                     <span class="badge bg-body-tertiary text-black rounded-pill" >
                                         {{tag}}
                                     </span>

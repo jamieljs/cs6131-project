@@ -8,7 +8,7 @@
 
     <div class="row m-5 justify-content-center">
         <div class="col-7">
-            <small>(<a href="/recipe/{{recipeinfo['recipe_id']}}">View recipe</a>)</small>
+            <small>(<a href="{{url_for('recipe', recipe_id=recipeinfo['recipe_id'])}}">View recipe</a>)</small>
 
             <h2> Recipe Information</h2>
             <form method="post" role="form" class="input-group my-2">
@@ -21,7 +21,7 @@
 
             <form method="post" role="form" class="my-2 row d-flex justify-content-between">
                 <div class="col">
-                    <textarea name="content" value="{{recipeinfo['recipe_description']}}" class="form-control" placeholder="Insert Recipe Description Here" disabled id="description-content"></textarea>
+                    <textarea name="content" value="{{recipeinfo['recipe_desc']}}" class="form-control" placeholder="Insert Recipe Description Here" disabled id="description-content"></textarea>
                     <input type="hidden" name="form_name" value="description">
                 </div>
                 <div class="col-4 w-auto d-flex align-items-center justify-content-end">
@@ -45,7 +45,7 @@
 
             <form method="post" role="form" class="input-group my-2">
                 <span class="input-group-text">Estimated number of portions:</span>
-                <input type="number" step="1" min="0" name="content" value="{{recipeinfo['recipe_num_portions']}}" class="form-control" disabled id="portions-content">
+                <input type="number" step="1" min="0" name="content" value="{{recipeinfo['num_portions']}}" class="form-control" disabled id="portions-content">
                 <input type="hidden" name="form_name" value="portions">
                 <button type="button" class="btn btn-outline-dark" id="portions-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
                 <button type="button" class="btn btn-dark" disabled id="portions-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
@@ -54,7 +54,7 @@
 
             <form method="post" role="form" class="input-group my-2">
                 <span class="input-group-text">Cooking Duration:</span>
-                <input type="number" step="0.5" min="0.5" name="content" value="{{recipeinfo['recipe_cook_time']}}" class="form-control" disabled id="cook-time-content">
+                <input type="number" step="0.5" min="0.5" name="content" value="{{recipeinfo['cook_time']}}" class="form-control" disabled id="cook-time-content">
                 <span class="input-group-text">hours</span>
                 <input type="hidden" name="form_name" value="cook-time">
                 <button type="button" class="btn btn-outline-dark" id="cook-time-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
@@ -65,10 +65,10 @@
             <form method="post" role="form" class="input-group my-2">
                 <span class="input-group-text">Difficulty:</span>
                 <select class="form-select" disabled id="difficulty-content">
-                    <option value="-1" {% if recipeinfo['recipe_difficulty'] == -1 %} selected {% endif %}>Unknown</option>
-                    <option value="0" {% if recipeinfo['recipe_difficulty'] == 0 %} selected {% endif %}>Beginner</option>
-                    <option value="1" {% if recipeinfo['recipe_difficulty'] == 1 %} selected {% endif %}>Intermediate</option>
-                    <option value="2" {% if recipeinfo['recipe_difficulty'] == 2 %} selected {% endif %}>Advanced</option>
+                    <option value="-1" {% if recipeinfo['difficulty'] == None%} selected {% endif %}>Unknown</option>
+                    <option value="0" {% if recipeinfo['difficulty'] == 0 %} selected {% endif %}>Beginner</option>
+                    <option value="1" {% if recipeinfo['difficulty'] == 1 %} selected {% endif %}>Intermediate</option>
+                    <option value="2" {% if recipeinfo['difficulty'] == 2 %} selected {% endif %}>Advanced</option>
                 </select>
                 <input type="hidden" name="form_name" value="difficulty">
                 <button type="button" class="btn btn-outline-dark" id="difficulty-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
@@ -113,7 +113,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ingredient in recipeinfo['recipe_ingredients'] %}
+                    {% for ingredient in recipeinfo['ingredients'] %}
                         <tr id="table-row-{{ingredient['ingredient_id']}}">
                             <td class="align-middle"> {{ingredient['ingredient_name']}} </td>
                             <td class="align-middle"> {{ingredient['quantity']}} </td>
@@ -160,7 +160,7 @@
             </form>
 
             <ol class="list-group list-group-numbered" id="instruction-content">
-                {% for instruction in recipeinfo['recipe_instructions'] %}
+                {% for instruction in recipeinfo['instructions'] %}
                 <li class="list-group-item d-flex justify-content-between align-items-center row" id="instruction-row-{{instruction['instruction_index']}}">
                     <div class="col mx-2">
                         <div class="fw-bold">{{instruction['instruction_title']}}</div>
@@ -185,7 +185,7 @@
             <hr>
 
             <h2 class="my-4">Tags</h2>
-            {% if recipeinfo['recipe_cuisines'] and recipeinfo['recipe_cuisines']|length != 0 %}
+            {% if recipeinfo['cuisines'] and recipeinfo['cuisines']|length != 0 %}
                 <h3>Cuisines</h3>
                 <form method="post" role="form" id="cuisine-form">
                     <input type="hidden" name="form_name" value="cuisine">
@@ -202,7 +202,7 @@
                     </div>
                 </form>
             {% endif %}
-            {% if recipeinfo['recipe_dietary'] and recipeinfo['recipe_dietary']|length != 0 %}
+            {% if recipeinfo['dietary'] and recipeinfo['dietary']|length != 0 %}
                 <h3>Dietary Restrictions</h3>
                 <form method="post" role="form" id="dietary-form">
                     <input type="hidden" name="form_name" value="dietary">
@@ -219,11 +219,6 @@
                     </div>
                 </form>
             {% endif %}
-            <!--
-            {% if recipeinfo['recipe_tags'] and recipeinfo['recipe_tags']|length != 0 %}
-                <b>Other Tags:</b>
-            {% endif %}
-            -->
         </div>
     </div>
 
@@ -268,7 +263,7 @@
             };
         }
         buttonVisibility(document.querySelector("#name-content"), document.querySelector("#name-edit"), document.querySelector("#name-cancel"), document.querySelector("#name-submit"), "{{recipeinfo['recipe_name']}}");
-        buttonVisibility(document.querySelector("#description-content"), document.querySelector("#description-edit"), document.querySelector("#description-cancel"), document.querySelector("#description-submit"), "{{recipeinfo['recipe_description']}}");
+        buttonVisibility(document.querySelector("#description-content"), document.querySelector("#description-edit"), document.querySelector("#description-cancel"), document.querySelector("#description-submit"), "{{recipeinfo['recipe_desc']}}");
         
         var image_link = document.querySelector("#image-content");
         var image_display = document.querySelector("#image-img");
@@ -278,9 +273,9 @@
             image_display.setAttribute("src", val);
         });
 
-        buttonVisibility(document.querySelector("#portions-content"), document.querySelector("#portions-edit"), document.querySelector("#portions-cancel"), document.querySelector("#portions-submit"), "{{recipeinfo['recipe_num_portions']}}");
-        buttonVisibility(document.querySelector("#cook-time-content"), document.querySelector("#cook-time-edit"), document.querySelector("#cook-time-cancel"), document.querySelector("#cook-time-submit"), "{{recipeinfo['recipe_cook_time']}}");
-        buttonVisibility(document.querySelector("#difficulty-content"), document.querySelector("#difficulty-edit"), document.querySelector("#difficulty-cancel"), document.querySelector("#difficulty-submit"), "{{recipeinfo['recipe_difficulty']}}");
+        buttonVisibility(document.querySelector("#portions-content"), document.querySelector("#portions-edit"), document.querySelector("#portions-cancel"), document.querySelector("#portions-submit"), "{{recipeinfo['num_portions']}}");
+        buttonVisibility(document.querySelector("#cook-time-content"), document.querySelector("#cook-time-edit"), document.querySelector("#cook-time-cancel"), document.querySelector("#cook-time-submit"), "{{recipeinfo['cook_time']}}");
+        buttonVisibility(document.querySelector("#difficulty-content"), document.querySelector("#difficulty-edit"), document.querySelector("#difficulty-cancel"), document.querySelector("#difficulty-submit"), "{{recipeinfo['difficulty']}}");
 
         
         function buttonVisibilityWithCursor(content_id, edit_btn, cancel_btn, submit_btn) {

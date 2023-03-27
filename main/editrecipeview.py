@@ -2,12 +2,11 @@ from flask import flash, url_for, session, redirect, render_template, request
 import tools
 
 def editrecipe(recipe_id):
-    userinfo = tools.getCurrentUserInfo()
     recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
     if recipeinfo == None:
-        flash('Page could not be found!', 'warning')
+        flash('Recipe could not be found!', 'warning')
         return redirect('/')
-    if userinfo == None or userinfo['user_id'] != recipeinfo['creator_id']:
+    if 'loggedin' not in session or session['id'] != recipeinfo['creator_id']:
         flash('You do not have access this page!', 'warning')
         return redirect('/')
 
@@ -48,4 +47,4 @@ def editrecipe(recipe_id):
             flash('Recipe editing failed. Please try again.', 'danger')
         return redirect('/editrecipe/' + str(recipe_id))
     
-    return render_template('editrecipe.html', userinfo=userinfo, recipeinfo=recipeinfo, currentPage='recipe', ingredient_names=ingredient_names, cuisine_tags=tools.cuisine_tags, dietary_tags=tools.dietary_tags)
+    return render_template('editrecipe.html', recipeinfo=recipeinfo, ingredient_names=ingredient_names, cuisine_tags=tools.cuisine_tags, dietary_tags=tools.dietary_tags)

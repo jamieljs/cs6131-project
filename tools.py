@@ -1,103 +1,196 @@
-from flask import session
-import hashlib, uuid
+from flask import session, flash
 import copy
 import datetime
+import re
+from extensions import mysql
+import MySQLdb.cursors
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # LOGIN / USERS
 
-def hashPassword(password, salt):
-    salted = password + salt
-    return hashlib.sha512(salted.encode('utf-8')).hexdigest()
+def login(username, password):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+    account = cursor.fetchone()
+    cursor.close()
 
-user_list = [{'user_id': 0, 'user_username': 'username', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking :)'}, {'user_id': 1, 'user_username': 'user2', 'user_password': hashPassword('password', 'salt'), 'user_salt': 'salt', 'user_description': 'Hello there! I enjoy cooking too :)'}]
+    if account:
+        if check_password_hash(account['password'], password):
+            flash('Welcome, ' + str(username) + '!', 'success')
+            session['loggedin'] = True
+            session['id'] = account['user_id']
+            session['username'] = account['username']
+            session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+            return True
+        else:
+            flash('Password is incorrect. Please try again.', 'danger')
+    else:
+        flash('User does not exist. Please try again.', 'danger')
+    
+    return False
 
-def login(user_info):
-    session['profile'] = user_info
-    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+def register(username, password):
+    if isValidUsername(username):
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('INSERT INTO user VALUES (NULL, %s, %s, NULL)', (username, generate_password_hash(password),))
+        cursor.close()
+        mysql.connection.commit() #commit the insertion
+        login(username, password)
+        return True
+    return False
 
-def getCurrentUserInfo():
-    try:
-        print(session)
-        user_id =  session['profile']['user_id']
-        print(user_id)
-        user_info = getUserInfoFromUserId(user_id)
-        return user_info
-    except KeyError as e:
-        return None
-    return None
+def getProfileInfoFromUserId(user_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE user_id = %s', (user_id,))
+    account = cursor.fetchone()
+    cursor.execute('SELECT follower_id, username FROM follows, user WHERE following_id = %s and follower_id = user_id', (user_id,))
+    account['followers'] = cursor.fetchall()
+    cursor.execute('SELECT following_id, username FROM follows, user WHERE follower_id = %s and following_id = user_id', (user_id,))
+    account['following'] = cursor.fetchall()
+    cursor.close()
+    return account
 
-def getUserInfoFromUserId(user_id):
-    if not isinstance(user_id, int) or user_id < 0 or user_id >= len(user_list):
-        return None
-    return user_list[user_id]
+def isValidUsername(username):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE username = %s', (username,))
+    account = cursor.fetchone()
+    
+    if account:
+        flash('This username is taken. Please try again.', 'danger')
+        return False
+    elif not re.match(r'[A-Za-z0-9]+', username):
+        flash('Username must only contain letters and numbers. Please try again.', 'danger')
+        return False
+    return True
 
-def getUserInfoFromUsername(username):
-    for i in range(len(user_list)):
-        if user_list[i]['user_username'] == username:
-            return user_list[i]
-    return None
+def getUserIdFromUsername(username):
+    if username == None:
+        return 0
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT user_id FROM user WHERE username = %s', (username,))
+    account = cursor.fetchone()
+    cursor.close()
+    if account == None:
+        return 0
+    return account['user_id']
 
-def checkPassword(userinfo, password):
-    return (userinfo['user_password'] == hashPassword(password, userinfo['user_salt']))
+def isFollowingProfile(user_id):
+    if 'loggedin' not in session or user_id == None:
+        return False
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM follows WHERE following_id = %s and follower_id = %s', (user_id, session['id'],))
+    flag = cursor.fetchone()
+    cursor.close()
+    if flag != None:
+        return True
+    return False
 
-def createUser(username, password):
-    salt = uuid.uuid4().hex
-    userinfo = {'user_id': len(user_list),
-                'user_username': username,
-                'user_password': hashPassword(password, salt),
-                'user_salt': salt,
-                'user_description': ''}
-    user_list.append(userinfo)
-    return userinfo
-
-def editProfile(user_id, username, description):
-
-    return 0
+def editProfile(username, description):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('UPDATE user set username=%s, user_desc=%s WHERE user_id = %s ', (username, description, session['id'],))
+    cursor.close()
+    mysql.connection.commit()
+    flash('You have updated your username and description successfully', 'success')
+    return
 
 def toggleFollow(user_id, target_id):
     pass
 
 def getUserNames():
-    pass
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT username FROM user')
+    usernames = cursor.fetchall()
+    cursor.close()
+    return usernames
 
 # RECIPES
-
-fake_ingredients = [{'ingredient_id':0,'ingredient_name':'sample ingredient 1','quantity':'1 tablespoon'}, {'ingredient_id':1,'ingredient_name':'sample ingredient 2','quantity':'500g'}]
-fake_instructions = [{'instruction_index': 0, 'instruction_title':'heading', 'instruction_subtitle':'some long text some long text some long text some long text some long text some long text'}, {'instruction_index': 1, 'instruction_title':'second instruction', 'instruction_subtitle':'text text'}]
-dietary_tags = [('vgt', 'Vegetarian'), ('vgn', 'Vegan'), ('egg', 'Egg-Free'), ('nut', 'Nut-Free'), ('dai', 'Dairy-Free'), ('glu', 'Gluten-Free'), ('flr', 'Flour-Less'), ('nsp', 'Non-Spicy')]
-recipe_list = [{'recipe_id': 0, 'recipe_name': 'Sample Recipe 1', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': -1, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Oceanic'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 0, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
-               {'recipe_id': 1, 'recipe_name': 'Sample Recipe 2', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 0, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Western European', 'Central European'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 1, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
-               {'recipe_id': 2, 'recipe_name': 'Sample Recipe 3', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 1, 'recipe_cook_time': 1, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://foodrepublic.com.sg/wp-content/uploads/2018/05/2-1-1024x683.jpg', 'recipe_cuisines':['Western European', 'Central European'], 'recipe_dietary':['Non-Spicy'], 'creator_id': 0, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5},
-               {'recipe_id': 3, 'recipe_name': 'Sample Recipe 4', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': 2, 'recipe_cook_time': 3, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dessert-main-image-molten-cake-0fbd4f2.jpg', 'recipe_cuisines':['Caribbean'], 'recipe_dietary':['Egg-Free', 'Non-Spicy'], 'creator_id': 1, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5}]
-cuisine_tags = [('caf', 'Central African'), ('eaf', 'East African'), ('naf', 'North African'), ('saf', 'Southern African'), ('waf', 'West African'), ('nam', 'North American'), ('cam', 'Central American'), ('sam', 'South American'), ('car', 'Caribbean'), ('cas', 'Central Asian'), ('eas', 'East Asian'), ('sas', 'South Asian'), ('sea', 'Southeast Asian'), ('was', 'West Asian'), ('ceu', 'Central European'), ('eeu', 'Eastern European'), ('neu', 'Northern European'), ('seu', 'Southern European'), ('weu', 'Western European'), ('oce', 'Oceanic')]
 
 recipe_per_page = 12
 saved_recipe_query_data = None
 
-def newRecipeSearchQuery(form_data):
-    if form_data:
-        if 'search_creator_id' in form_data and form_data['search_creator_id'] != -1:
-            pass
-        else:
-            pass
-
-        if 'search_bookmarked' in form_data and form_data['search_bookmarked'] == 1:
-            pass
-        else:
-            pass
-        temp_query_data = copy.deepcopy(recipe_list)
-        # TODO: query based on form data
+''' TODO: make this a stored procedure if possible because this code is ugly '''
+def newRecipeSearchQuery(query):
+    query_name = '%'
+    tokens = query['text'].split(" ")
+    for token in tokens:
+        if token != '':
+            query_name = query_name + token + '%'
+    if query['dietary'] == []:
+        query['dietary'] = ['']
+    if query['cuisine'] == []:
+        query['cuisine'] = ['']
+    
+    query_prefix =   '''SELECT id, name, description, image, duration, difficulty, rating, cuisines
+                        FROM
+                            ( 
+                            SELECT recipe_id AS id, recipe_name AS name,
+                                CASE
+                                    WHEN LENGTH(recipe_desc) > 100 THEN CONCAT(LEFT(recipe_desc, 100), '[...]')
+                                    ELSE recipe_desc
+                                END AS description,
+                                recipe_image AS image, cook_time AS duration, difficulty, recipe_rating AS rating
+                                FROM recipe R
+                                WHERE recipe_name LIKE %s
+                                  AND (%s = 0 OR creator_id = %s)
+                                  AND recipe_id IN (
+                                                   SELECT recipe_id
+                                                   FROM uses_ingredient U, ingredient I
+                                                   WHERE U.ingr_id = I.ingr_id AND (%s = '' OR I.ingr_name = %s)
+                                                   )
+                                  AND recipe_id NOT IN (
+                                                       SELECT recipe_id
+                                                       FROM uses_ingredient U, excludes E
+                                                       WHERE U.ingr_id = E.ingr_id AND E.dietary_id IN %s
+                                                       )'''
+    if 'loggedin' in session and query['my_ingredients']:
+        query_inventory =      '''AND recipe_id NOT IN (
+                                                       SELECT recipe_id
+                                                       FROM uses_ingredient U, inventory I
+                                                       WHERE U.ingr_id IN (
+                                                                          SELECT ingr_id
+                                                                          FROM inventory WHERE user_id = ''' + session['id'] + '''
+                                                                          GROUP BY ingr_id HAVING MAX(expiry) < CURDATE()
+                                                                          ) OR
+                                                             U.ingr_id NOT IN (SELECT ingr_id FROM inventory WHERE user_id = ''' + session['id'] + '))'
     else:
-        temp_query_data = copy.deepcopy(recipe_list)
+        query_inventory = ''
+    if 'loggedin' in session and query['bookmarked']:
+        query_bookmarked =       'AND recipe_id IN (SELECT recipe_id FROM bookmark WHERE user_id = ' + session['id'] + ')'
+    else:
+        query_bookmarked = ''
+    query_suffix = '''            AND (%s IN ('') OR (
+                                                     SELECT COUNT(*)
+                                                     FROM belongs_to B, tag T
+                                                     WHERE R.recipe_id = B.recipe_id AND B.cuisine_id = T.tag_id and T.tag_id IN %s
+                                                     ) > 0
+                                      )
+                            ) T1
+                            NATURAL LEFT JOIN
+                            (
+                            SELECT R.recipe_id AS id, GROUP_CONCAT(T.tag_name) AS cuisines
+                            FROM recipe R, belongs_to B, tag T
+                            WHERE R.recipe_id = B.recipe_id AND B.cuisine_id = T.tag_id
+                            GROUP BY R.recipe_id
+                            ) T2
+                        ORDER BY %s %s'''
+    
+    query_string = query_prefix + query_inventory + query_bookmarked + query_suffix
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(query_string, (query_name,
+                                  query['creator_id'], query['creator_id'],
+                                  query['ingredient'], query['ingredient'],
+                                  query['dietary'],
+                                  query['cuisine'], query['cuisine'],
+                                  query['sort_attribute'], query['sort_direction'],))
+    saved_recipe_query_data = cursor.fetchall()
+    cursor.close()
 
-    saved_recipe_query_data = []
-
-    for recipe in temp_query_data:
-        if len(recipe['recipe_description']) > 100:
-            recipe['recipe_description'] = recipe['recipe_description'][:100] + '[...]'
-        recipe.pop('recipe_instructions')
-        saved_recipe_query_data.append(recipe)
-        
+    print(saved_recipe_query_data)
+    for recipe in saved_recipe_query_data:
+        if recipe['cuisines']:
+            recipe['cuisines'] = recipe['cuisines'].split(',')
+        else:
+            recipe['cuisines'] = []
     return saved_recipe_query_data
 
 def getSavedRecipeQueryData():
@@ -105,19 +198,43 @@ def getSavedRecipeQueryData():
 
 # creates new recipe, stores basic information, returns id
 def newRecipe(creator_id):
-    return_id = len(recipe_list)
-    recipe_list.append({'recipe_id': return_id, 'recipe_name': 'Sample Recipe 1', 'recipe_description': 'some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text some long text', 'recipe_instructions': fake_instructions, 'recipe_difficulty': -1, 'recipe_cook_time': 0.5, 'recipe_num_portions': 1, 'recipe_ingredients':fake_ingredients, 'recipe_image': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80', 'recipe_cuisines':['Oceanic'], 'recipe_dietary':['Non-Spicy'], 'creator_id': creator_id, 'date_created':datetime.datetime.now().date(), 'recipe_rating':4.5})
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('INSERT INTO recipe VALUES (NULL, %s, %s, NULL, NULL, NULL, NULL, %s, %s, NULL)',
+                    ('New Recipe Name', 'New Recipe Description', creator_id, datetime.datetime.now().date(),))
+    return_id = cursor.lastrowid
+    cursor.close()
+    mysql.connection.commit()
+    
     return return_id
 
 def deleteRecipe(recipe_id):
-    return None
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('DELETE FROM recipe WHERE recipe_id=%s', (recipe_id,))
+    cursor.close()
+    mysql.connection.commit()
+    return
 
 def editRecipe(recipe_id):
     return None
 
 def getRecipeInfoFromRecipeId(recipe_id):
-    # TODO: there is more to be done (merging from other tables) but recipe_list is overpowered for now
-    return recipe_list[recipe_id]
+    # TODO
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM recipe WHERE recipe_id = %s', (recipe_id,))
+    recipe = cursor.fetchone()
+
+    recipe['instructions'] = []
+
+    recipe['ingredients'] = []
+
+    recipe['cuisines'] = []
+
+    recipe['dietary'] = []
+
+    recipe['rating'] = []
+
+    cursor.close() 
+    return recipe
 
 def getRecipeRatings(recipe_id):
     return [1, 1, 0, 0, 0]
@@ -127,6 +244,37 @@ def updateRating(user_id, recipe_id, rating):
 
 def toggleBookmark(user_id, target_id):
     pass
+
+def bookmarkedRecipe(recipe_id):
+    if 'loggedin' not in session or recipe_id == None:
+        return False
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM bookmark WHERE user_id = %s and recipe_id = %s', (session['id'], recipe_id,))
+    flag = cursor.fetchone()
+    cursor.close()
+    if flag != None:
+        return True
+    return False
+
+def getCuisineTags():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT T.tag_id, T.tag_name FROM cuisine C, tag T WHERE C.tag_id = T.tag_id')
+    query_result = cursor.fetchall()
+    cursor.close()
+    cuisine_tags = []
+    for i in query_result:
+        cuisine_tags.append((i['tag_id'], i['tag_name']))
+    return cuisine_tags
+
+def getDietaryTags():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT T.tag_id, T.tag_name FROM excludes E, tag T where E.dietary_id = T.tag_id')
+    query_result = cursor.fetchall()
+    cursor.close()
+    dietary_tags = []
+    for i in query_result:
+        dietary_tags.append((i['tag_id'], i['tag_name']))
+    return dietary_tags
 
 # INVENTORY
 
@@ -143,3 +291,13 @@ def removeIngredientFromInventory(user_id, ingredient_id, expiry_date):
 
 def getIngredientNames():
     return ['sample ingredient 1', 'sample ingredient 2', 'food', 'abc', 'def', 'ghi', 'jkl']
+
+# FEEDBACK
+
+def storeFeedback(feedback_text):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('INSERT INTO feedback VALUES (NULL, %s)', (feedback_text,))
+    cursor.close()
+    mysql.connection.commit() #commit the insertion
+    flash('Your feedback has been submitted!', 'success')
+    return

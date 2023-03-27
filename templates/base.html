@@ -36,16 +36,16 @@
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <a href="/" class="nav-link {% if currentPage and currentPage == 'home' %} active {% endif %}" aria-current="page">
+                        <a href="/" class="nav-link {{ 'active' if request.path == url_for('home') }}" aria-current="page">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
                             <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"/>
                         </svg>
                         Home
                         </a>
                     </li>
-                        {% if userinfo %}
+                        {% if 'loggedin' in session %}
                         <li class="nav-item">
-                            <a href="/inventory" class="nav-link {% if currentPage and currentPage == 'inventory' %} active {% endif %}">
+                            <a href="{{url_for('inventory')}}" class="nav-link {{ 'active' if request.path == url_for('inventory') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
                                 <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                             </svg>
@@ -53,7 +53,7 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if currentPage and currentPage == 'recipe' %} active {% endif %}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {{ 'active' if request.path == url_for('browse') or request.path.startswith(url_for('recipe',recipe_id=0)[:-2]) or request.path.startswith(url_for('editrecipe',recipe_id=0)[:-2]) }}" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
                                     <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
                                     <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
@@ -61,15 +61,15 @@
                                 Recipes
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/browse">Browse Recipes</a></li>
-                                <li><a class="dropdown-item" href="/browse?creator={{userinfo['user_id']}}">My Recipes</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('browse')}}">Browse Recipes</a></li>
+                                <li><a class="dropdown-item" href="/browse?creator={{session['id']}}">My Recipes</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/createrecipe">Create New Recipe</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('createRecipe')}}">Create New Recipe</a></li>
                             </ul>
                         </li>
                         <hr>
                         <li class="nav-item">
-                            <a href="/profile/{{userinfo['user_id']}}" class="nav-link {% if currentPage and currentPage == 'profile' %} active {% endif %}">
+                            <a href="{{url_for('profile', user_id=session['id'])}}" class="nav-link {{ 'active' if request.path == url_for('profile',user_id=session['id']) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
                             </svg>
@@ -78,7 +78,7 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a href="/browse" class="nav-link {% if currentPage and currentPage == 'recipe' %} active {% endif %}">
+                            <a href="{{url_for('browse')}}" class="nav-link {{ 'active' if request.path == url_for('browse') or request.path.startswith(url_for('recipe',recipe_id=0)[:-2]) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
                                     <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
                                     <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
@@ -89,7 +89,7 @@
                         <hr>
                     {% endif %}
                     <li class="nav-item">
-                        <a href="/feedback" class="nav-link {% if currentPage and currentPage == 'feedback' %} active {% endif %}">
+                        <a href="{{url_for('feedback')}}" class="nav-link {{ 'active' if request.path == url_for('feedback') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chat-right-text" viewBox="0 0 16 16">
                             <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
                             <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
@@ -99,8 +99,8 @@
                     </li>
                 </ul>
                 <hr>
-                {% if userinfo %}
-                <a href="/logout" class="btn btn-outline-light" role="button">
+                {% if 'loggedin' in session %}
+                <a href="{{url_for('logout')}}" class="btn btn-outline-light" role="button">
                     Log out
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-door-open" viewBox="0 0 16 16">
                         <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"/>
@@ -108,7 +108,7 @@
                     </svg>
                 </a>
                 {% else %}
-                <a href="/login" class="btn btn-outline-light" role="button">
+                <a href="{{url_for('login')}}" class="btn btn-outline-light" role="button">
                     Log in / Sign up
                 </a>
                 {% endif %}

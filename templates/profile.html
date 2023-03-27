@@ -1,20 +1,20 @@
 {% extends "base.html" %}
-{% block title %} Profile - {{profileinfo['user_username']}} {% endblock %}
+{% block title %} Profile - {{profileinfo['username']}} {% endblock %}
 {% block head %} {{ super() }} {% endblock %}
 
 {% block content %}
 
 <div class="container min-vh-100 d-flex flex-column justify-content-center m-auto w-75 p-5">
 
-    {% if userinfo and userinfo['user_id'] == profileinfo['user_id'] %}
+    {% if 'loggedin' in session and session['id'] == profileinfo['user_id'] %}
 
         <div class="card">
             <div class="card-header text-start">
                 <h3>My Profile</h3>
             </div>
             <div class="card-body text-center">
-                <p><b>Username: </b> {{ userinfo['user_username'] }}<br>
-                <b>Description: </b> {{ userinfo['user_description'] }}</p>
+                <p><b>Username: </b> {{ profileinfo['username'] }}<br>
+                <b>Description: </b> {{ profileinfo['user_desc'] }}</p>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-profile-modal">
                     Edit Profile
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
@@ -25,19 +25,15 @@
                 <p class="m-3">For password changes or account deletion, please contact the developer via the Feedback page.</p>
 
                 <div class="row-col">
-                    <a class="btn btn-lg btn-primary m-3" href="/browse?creator={{userinfo['user_id']}}" role="button">
-                        My Recipes
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
-                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
-                        </svg>
-                    </a>
-                    <a class="btn btn-lg btn-primary m-3" href="/browse?bookmarked=1" role="button">
-                        Bookmarked Recipes
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-star-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zM8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.178.178 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.178.178 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.178.178 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.178.178 0 0 1-.134-.098L8.16 4.1z"/>
-                        </svg>
-                    </a>
-                    <a class="btn btn-lg btn-primary m-3" href="/inventory" role="button">
+                    <form action="{{ url_for('browse') }}" method="post">
+                        <input type="hidden" name="profile_my_recipes" >
+                        <button type="submit" class="btn btn-lg btn-primary m-3">My Recipes<i class="bi bi-book"></i></button>
+                    </form>
+                    <form action="{{ url_for('browse') }}" method="post">
+                        <input type="hidden" name="profile_bookmarked" >
+                        <button type="submit" class="btn btn-lg btn-primary m-3">Bookmarked Recipes<i class="bi bi-bookmark-star-fill"></i></button>
+                    </form>
+                    <a class="btn btn-lg btn-primary m-3" href="{{url_for('inventory')}}" role="button">
                         My Inventory
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
                             <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
@@ -48,15 +44,15 @@
         </div>
         <div class="card mt-5">
             <div class="card-header text-start">
-                <h3>Users I am Following ({{userinfo['following']|length if userinfo['following'] != None else 0}})</h3>
+                <h3>Users I am Following ({{profileinfo['following']|length if profileinfo['following'] != None else 0}})</h3>
             </div>
             <div class="card-body text-center">
                 <div class="row-col">
-                    {% if userinfo['following'] == None or userinfo['following']|length == 0 %}
+                    {% if profileinfo['following'] == None or profileinfo['following']|length == 0 %}
                         No one here :( Browse recipes and take a look at the creators to find users to follow!
                     {% else %}
-                        {% for id, name in userinfo['following'] %}
-                            <a role="button" class="btn btn-following m-2" href="/profile/{{id}}">{{name}}</a>
+                        {% for d in profileinfo['following'] %}
+                            <a role="button" class="btn btn-following m-2" href="{{url_for('profile', user_id=d['following_id'])}}">{{d['username']}}</a>
                         {% endfor %}
                     {% endif %}
                 </div>
@@ -64,15 +60,15 @@
         </div>
         <div class="card mt-5">
             <div class="card-header text-start">
-                <h3>My Followers ({{userinfo['followers']|length if userinfo['followers'] != None else 0}})</h3>
+                <h3>My Followers ({{profileinfo['followers']|length if profileinfo['followers'] != None else 0}})</h3>
             </div>
             <div class="card-body text-center">
                 <div class="row-col">
-                    {% if userinfo['followers'] == None or userinfo['followers']|length == 0 %}
+                    {% if profileinfo['followers'] == None or profileinfo['followers']|length == 0 %}
                         No one here :( Start creating recipes and share your recipes with others!
                     {% else %}
-                        {% for id, name in userinfo['followers'] %}
-                            <a role="button" class="btn btn-following m-2" href="/profile/{{id}}">{{name}}</a>
+                        {% for d in profileinfo['followers'] %}
+                            <a role="button" class="btn btn-following m-2" href="{{url_for('profile', user_id=d['follower_id'])}}">{{d['username']}}</a>
                         {% endfor %}
                     {% endif %}
                 </div>
@@ -84,12 +80,12 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <h3>
-                    {{profileinfo['user_username']}}'s Profile
+                    {{profileinfo['username']}}'s Profile
                 </h3>
-                {% if userinfo %}
+                {% if 'loggedin' in session %}
                     <form id="toggle-follow-form" method="post" role="form">
                         <input type="hidden" name="form_name" value="toggle-follow">
-                        {% if profileinfo['user_id'] in userinfo['following'] %}
+                        {% if user_is_following_profile %}
                             <button type="submit" class="btn btn-unfollow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
                         {% else %}
                             <button type="submit" class="btn btn-follow">Follow <i class="bi bi-star ms-1"></i></button>
@@ -98,8 +94,8 @@
                 {% endif %}
             </div>
             <div class="card-body text-center">
-                <p><b>Description: </b> {{ profileinfo['user_description'] }}</p>
-                <a class="btn btn-primary" href="/browse?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['user_username']}}'s Recipes</a>
+                <p><b>Description: </b> {{ profileinfo['user_desc'] }}</p>
+                <a class="btn btn-primary" href="/browse?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['username']}}'s Recipes</a>
             </div>
         </div>
 
@@ -116,11 +112,11 @@
                     <div class="modal-body">
                         {{ form.csrf_token }}
                         <div class="form-floating m-4">
-                            {{ form.profile_username(class_="form-control", placeholder=userinfo.username) }}
+                            {{ form.profile_username(class_="form-control", value=session['username']) }}
                             {{ form.profile_username.label }}
                         </div>
                         <div class="form-floating m-4">
-                            {{ form.profile_description(class_="form-control", placeholder=userinfo.user_description) }}
+                            {{ form.profile_description(class_="form-control", value=profileinfo['user_desc']) }}
                             {{ form.profile_description.label }}
                         </div>
                     </div>
