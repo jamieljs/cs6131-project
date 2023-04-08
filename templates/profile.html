@@ -22,16 +22,17 @@
                     </svg>
                 </button>
 
-                <p class="m-3">For password changes or account deletion, please contact the developer via the Feedback page.</p>
+                <p class="m-3">For password changes, please contact the developer via the Feedback page.</p>
+                <p><b>Average Rating of Created Recipes: </b>{{'%0.1f' % profileinfo['avg_rating']|float}}</p>
 
                 <div class="row-col">
                     <form action="{{ url_for('browse') }}" method="post">
                         <input type="hidden" name="profile_my_recipes" >
-                        <button type="submit" class="btn btn-lg btn-primary m-3">My Recipes<i class="bi bi-book"></i></button>
+                        <button type="submit" class="btn btn-lg btn-primary m-3">My Recipes <i class="bi bi-book"></i></button>
                     </form>
                     <form action="{{ url_for('browse') }}" method="post">
                         <input type="hidden" name="profile_bookmarked" >
-                        <button type="submit" class="btn btn-lg btn-primary m-3">Bookmarked Recipes<i class="bi bi-bookmark-star-fill"></i></button>
+                        <button type="submit" class="btn btn-lg btn-primary m-3">Bookmarked Recipes <i class="bi bi-bookmark-star-fill"></i></button>
                     </form>
                     <a class="btn btn-lg btn-primary m-3" href="{{url_for('inventory')}}" role="button">
                         My Inventory
@@ -83,19 +84,21 @@
                     {{profileinfo['username']}}'s Profile
                 </h3>
                 {% if 'loggedin' in session %}
-                    <form id="toggle-follow-form" method="post" role="form">
-                        <input type="hidden" name="form_name" value="toggle-follow">
-                        {% if user_is_following_profile %}
-                            <button type="submit" class="btn btn-unfollow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
-                        {% else %}
-                            <button type="submit" class="btn btn-follow">Follow <i class="bi bi-star ms-1"></i></button>
-                        {% endif %}
-                    </form>
+                    {% if user_is_following_profile %}
+                        <button type="submit" class="btn btn-unfollow" onclick=toggleFollow() id="toggle-follow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
+                    {% else %}
+                        <button type="submit" class="btn btn-follow" onclick=toggleFollow() id="toggle-follow">Follow <i class="bi bi-star ms-1"></i></button>
+                    {% endif %}
                 {% endif %}
             </div>
             <div class="card-body text-center">
-                <p><b>Description: </b> {{ profileinfo['user_desc'] }}</p>
-                <a class="btn btn-primary" href="/browse?creator={{profileinfo['user_id']}}" role="button">{{profileinfo['username']}}'s Recipes</a>
+                <p><b>Description: </b>{{ profileinfo['user_desc'] }}</p>
+                <p><b>Average Rating of Created Recipes: </b>{{'%0.1f' % profileinfo['avg_rating']|float}}</p>
+                <form action="{{ url_for('browse') }}" method="post">
+                    <input type="hidden" name="profile_someones_recipes" >
+                    <input type="hidden" name="profile_creator_id" value="{{profileinfo['user_id']}}">
+                    <button type="submit" class="btn btn-lg btn-primary m-3">{{profileinfo['username']}}'s Recipes <i class="bi bi-book"></i></button>
+                </form>
             </div>
         </div>
 
@@ -128,6 +131,21 @@
             </div>
         </div>
     </div>
+    <script>
+         function toggleFollow(){
+            params = {
+                'target_id': {{profileinfo['user_id']}}
+            }
+            console.log(params)
+            $.post('/profile/togglefollowprofile',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                }
+            })
+            //alert("toggled follow")
+            //window.location.reload(true)
+        }
+    </script>
 </div>
 
 {% endblock %}

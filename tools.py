@@ -47,6 +47,12 @@ def getProfileInfoFromUserId(user_id):
     account['followers'] = cursor.fetchall()
     cursor.execute('SELECT following_id, username FROM follows, user WHERE follower_id = %s and following_id = user_id', (user_id,))
     account['following'] = cursor.fetchall()
+    cursor.execute('SELECT AVG(recipe_rating) as avg FROM recipe WHERE creator_id = %s', (user_id,))
+    result = cursor.fetchone()
+    if result:
+        account['avg_rating'] = result['avg']
+    else:
+        account['avg_rating'] = None
     cursor.close()
     return account
 
@@ -94,6 +100,8 @@ def editProfile(username, description):
     return
 
 def toggleFollow(user_id, target_id):
+    if user_id:
+        pass
     pass
 
 def getUserNames():
@@ -218,6 +226,7 @@ def editRecipe(recipe_id):
     return None
 
 def getRecipeInfoFromRecipeId(recipe_id):
+    # remember to give username too
     # TODO
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM recipe WHERE recipe_id = %s', (recipe_id,))

@@ -22,7 +22,9 @@ def browse():
     result = request.form
     query = dict({'text': '', 'creator_id': 0, 'ingredient': '', 'cuisine': [], 'dietary': [], 'my_ingredients': False, 'bookmarked': False, 'sort_attribute': 'date', 'sort_direction': 'DESC'})
     if request.method == 'POST': # new search query
-        if 'profile_my_recipes' in result:
+        if 'profile_someones_recipes' in result:
+            query['creator_id'] = result['profile_creator_id']
+        elif 'profile_my_recipes' in result:
             query['creator_id'] = session['id']
         elif 'profile_bookmarked' in result:
             query['bookmarked'] = True

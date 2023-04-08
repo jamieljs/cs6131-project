@@ -11,16 +11,12 @@
             <!-- name -->
             <h2>
                 {% if 'loggedin' in session %}
-                    <form id="toggle-bookmark-form" method="post" role="form">
-                        {{recipeinfo['recipe_name']}}
-
-                        <input type="hidden" name="form_name" value="toggle-bookmark">
-                        {% if user_bookmarked_recipe %}
-                            <button type="submit" class="btn btn-unfollow btn-lg ms-2">Remove Bookmark <i class="bi bi-bookmark-star-fill ms-1"></i></button>
-                        {% else %}
-                            <button type="submit" class="btn btn-follow btn-lg ms-2">Bookmark <i class="bi bi-bookmark-plus ms-1"></i></button>
-                        {% endif %}
-                    </form>
+                    {{recipeinfo['recipe_name']}}
+                    {% if user_bookmarked_recipe %}
+                        <button type="submit" class="btn btn-unfollow btn-lg ms-2" onclick=toggleBookmark() id="toggle-bookmark">Remove Bookmark <i class="bi bi-bookmark-star-fill ms-1"></i></button>
+                    {% else %}
+                        <button type="submit" class="btn btn-follow btn-lg ms-2" onclick=toggleBookmark() id="toggle-bookmark">Bookmark <i class="bi bi-bookmark-plus ms-1"></i></button>
+                    {% endif %}
                 {% else %}
                     {{recipeinfo['recipe_name']}}
                 {% endif %}
@@ -95,22 +91,19 @@
                     </h2>
                     <div id="accordion-one" class="accordion-collapse collapse show" aria-labelledby="heading-one">
                         <div class="accordion-body">
-                            {% if 'loggedin' in session and session['id'] != recipeinfo['creator_id'] %}
-                                <form id="toggle-follow-form" method="post" role="form">
-                                    <b>Created by:</b> <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a>
-                                    <input type="hidden" name="form_name" value="toggle-follow">
-                                    {% if user_is_following_creator %}
-                                        <button type="submit" class="btn btn-unfollow ms-2">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
-                                    {% else %}
-                                        <button type="submit" class="btn btn-follow ms-2">Follow <i class="bi bi-star ms-1"></i></button>
-                                    {% endif %}
-                                    <br>
-                                    <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small>
-                                </form>
+                            <b>Created by:</b>
+                            {% if recipeinfo['creator_id'] and recipeinfo['creator_id'] != 0 %}
+                                <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a>
+                                {% if 'loggedin' in session and session['id'] != recipeinfo['creator_id'] and user_is_following_creator %}
+                                    <button type="submit" class="btn btn-unfollow ms-2" onclick=toggleFollow() id="toggleFollow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-follow ms-2" onclick=toggleFollow() id="toggleFollow">Follow <i class="bi bi-star ms-1"></i></button>
+                                {% endif %}
                             {% else %}
-                                <b>Created by:</b> <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a><br>
-                                <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small><br>
+                                [Deleted User]
                             {% endif %}
+                            <br>
+                            <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small>
 
                             <b>Estimated number of portions:</b> {{ recipeinfo['num_portions'] }}<br>
                             {% if recipeinfo['cook_time'] != None %}
@@ -262,6 +255,34 @@
             </div>
         </div>
     </div>
+    <script>
+        function toggleFollow(){
+            params = {
+                'target_id': {{recipeinfo['creator_id']}}
+            }
+            console.log(params)
+            $.post('/recipe/togglefollowcreator',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                }
+            })
+            //alert("toggled follow")
+            //window.location.reload(true)
+        }
+        function toggleBookmark(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}}
+            }
+            console.log(params)
+            $.post('/recipe/togglebookmark',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                }
+            })
+            //alert("toggled bookmark")
+            //window.location.reload(true)
+        }
+    </script>
 </div>
 
 {% endblock %}

@@ -2,6 +2,32 @@ from flask import flash, url_for, session, redirect, render_template, request
 from forms import DeleteRecipeForm
 import tools
 
+def togglefollowcreator():
+    if 'loggedin' in session:
+        userid = session['id']
+    else:
+        return {'status':300,'error':'Access to resource denied'}
+
+    target_id = request.form['target_id']
+    if target_id:
+        tools.toggleFollow(userid, target_id)
+        return {'status':200,'error':''}
+
+    return {'status':300,'error':'Access to resource denied'}
+
+def togglebookmark():
+    if 'loggedin' in session:
+        userid = session['id']
+    else:
+        return {'status':300,'error':'Access to resource denied'}
+
+    recipe_id = request.form['target_id']
+    if recipe_id:
+        tools.toggleBookmark(userid, recipe_id)
+        return {'status':200,'error':''}
+
+    return {'status':300,'error':'Access to resource denied'}
+
 def recipe(recipe_id):
     if 'loggedin' in session:
         userid = session['id']
@@ -19,12 +45,7 @@ def recipe(recipe_id):
     form = DeleteRecipeForm()
 
     result = request.form
-    if 'form_name' in result and result['form_name'] == 'toggle-follow':
-        tools.toggleFollow(userid, recipeinfo['creator_id'])
-    elif 'form_name' in result and result['form_name'] == 'toggle-bookmark':
-        tools.toggleBookmark(userid, recipeinfo['recipe_id'])
-        recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
-    elif 'form_name' in result and result['form_name'] == 'rating':
+    if 'form_name' in result and result['form_name'] == 'rating':
         if 'ratings' in result:
             rating = result['ratings']
             tools.updateRating(userid, recipeinfo['recipe_id'], rating)

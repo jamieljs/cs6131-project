@@ -25,7 +25,10 @@ app.add_url_rule('/feedback', view_func = feedbackview.feedback, methods=['GET',
 app.add_url_rule('/inventory', view_func = inventoryview.inventory, methods=['GET', 'POST'])
 app.add_url_rule('/login', view_func = loginview.login, methods=['GET', 'POST'])
 app.add_url_rule('/profile/<int:user_id>', view_func = profileview.profile, methods=['GET', 'POST'])
+app.add_url_rule('/profile/togglefollowprofile', view_func = profileview.togglefollowprofile, methods=['POST'])
 app.add_url_rule('/recipe/<int:recipe_id>', view_func = recipeview.recipe, methods=['GET', 'POST'])
+app.add_url_rule('/recipe/togglefollowcreator', view_func = recipeview.togglefollowcreator, methods=['POST'])
+app.add_url_rule('/recipe/togglebookmark', view_func = recipeview.togglebookmark, methods=['POST'])
 
 @app.route('/logout')
 def logout():
