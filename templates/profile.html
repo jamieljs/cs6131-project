@@ -13,7 +13,7 @@
                 <h3>My Profile</h3>
             </div>
             <div class="card-body text-center">
-                <p><b>Username: </b> {{ profileinfo['username'] }}<br>
+                <p style="word-break:break-all"><b>Username: </b> {{ profileinfo['username'] }}<br>
                 <b>Description: </b> {{ profileinfo['user_desc'] }}</p>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-profile-modal">
                     Edit Profile
@@ -23,7 +23,7 @@
                 </button>
 
                 <p class="m-3">For password changes, please contact the developer via the Feedback page.</p>
-                <p><b>Average Rating of Created Recipes: </b>{{'%0.1f' % profileinfo['avg_rating']|float}}</p>
+                <p><b>Average Rating of Created Recipes: </b>{% if profileinfo['avg_rating'] %} {{'%0.1f' % profileinfo['avg_rating']|float}} {% else %} N/A {% endif %}</p>
 
                 <div class="row-col">
                     <form action="{{ url_for('browse') }}" method="post">
@@ -75,6 +75,23 @@
                 </div>
             </div>
         </div>
+        <div class="card mt-5">
+            <div class="card-header text-start">
+                <h3>Delete My Account Permanently</h3>
+            </div>
+            <div class="card-body text-center">
+                <h5 class="text-center">WARNING: account deletion cannot be undone.</h5>
+                <p>Please enter your password to confirm your identity before clicking the delete button.</p>
+                <form action="" method="post">
+                    {{ delete_form.csrf_token }}
+                    <div class="form-floating m-4">
+                        {{ delete_form.del_password(class_="form-control") }}
+                        {{ delete_form.del_password.label }}
+                    </div>
+                    {{ delete_form.delete_acc(class_="btn btn-lg btn-danger") }}
+                </form>
+            </div>
+        </div>
 
     {% else %} <!-- not your own profile, cannot edit things / see followers etc. -->
 
@@ -83,17 +100,14 @@
                 <h3>
                     {{profileinfo['username']}}'s Profile
                 </h3>
-                {% if 'loggedin' in session %}
-                    {% if user_is_following_profile %}
-                        <button type="submit" class="btn btn-unfollow" onclick=toggleFollow() id="toggle-follow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
-                    {% else %}
-                        <button type="submit" class="btn btn-follow" onclick=toggleFollow() id="toggle-follow">Follow <i class="bi bi-star ms-1"></i></button>
-                    {% endif %}
+                {% if 'loggedin' in session and session['id'] != profileinfo['user_id'] %}
+                    <button type="submit" class="btn btn-unfollow ms-2" onclick=toggleFollow() id="toggle-unfollow" {% if not user_is_following_profile %} style="display:none" {% endif %}>Unfollow <i class="bi bi-star-fill ms-1"></i></button>
+                    <button type="submit" class="btn btn-follow ms-2" onclick=toggleFollow() id="toggle-follow" {% if user_is_following_profile %} style="display:none" {% endif %}>Follow <i class="bi bi-star ms-1"></i></button>
                 {% endif %}
             </div>
             <div class="card-body text-center">
-                <p><b>Description: </b>{{ profileinfo['user_desc'] }}</p>
-                <p><b>Average Rating of Created Recipes: </b>{{'%0.1f' % profileinfo['avg_rating']|float}}</p>
+                <p style="word-break:break-all"><b>Description: </b>{{ profileinfo['user_desc'] }}</p>
+                <p><b>Average Rating of Created Recipes: </b>{% if profileinfo['avg_rating'] %} {{'%0.1f' % profileinfo['avg_rating']|float}} {% else %} N/A {% endif %}</p>
                 <form action="{{ url_for('browse') }}" method="post">
                     <input type="hidden" name="profile_someones_recipes" >
                     <input type="hidden" name="profile_creator_id" value="{{profileinfo['user_id']}}">
@@ -115,7 +129,7 @@
                     <div class="modal-body">
                         {{ form.csrf_token }}
                         <div class="form-floating m-4">
-                            {{ form.profile_username(class_="form-control", value=session['username']) }}
+                            {{ form.profile_username(class_="form-control", value=profileinfo['username']) }}
                             {{ form.profile_username.label }}
                         </div>
                         <div class="form-floating m-4">
@@ -132,7 +146,9 @@
         </div>
     </div>
     <script>
-         function toggleFollow(){
+        followbtn = document.getElementById('toggle-follow');
+        unfollowbtn = document.getElementById('toggle-unfollow');
+        function toggleFollow(){
             params = {
                 'target_id': {{profileinfo['user_id']}}
             }
@@ -140,6 +156,14 @@
             $.post('/profile/togglefollowprofile',params).done((response) => {
                 if (response.status !== 200){
                     alert(response.error)
+                }else{
+                    if (followbtn.style.display === "none") {
+                        followbtn.style.display = "inline";
+                        unfollowbtn.style.display = "none";
+                    } else {
+                        followbtn.style.display = "none";
+                        unfollowbtn.style.display = "inline";
+                    }
                 }
             })
             //alert("toggled follow")

@@ -190,8 +190,8 @@
         {% else %}
             {% for recipe in recipe_list %}
                 <div class="col m-2" style="width: 30%">
-                    <div class="card bg-light-subtle">
-                        <img src="{{ recipe['image'] }}" class="card-img-top" style="max-height: 200px; object-fit: cover;">
+                    <div class="card bg-light-subtle" style="min-height: 460px;">
+                        <img src="{{ recipe['image'] }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                         <div class="card-body text-start">
                             <h4 class="card-title">
                                 {{ recipe['name'] }}
@@ -217,7 +217,7 @@
                                     <br>
                                 {% endif %}
                                 {% if recipe['duration'] != None %}
-                                    <b>Cooking Duration:</b> {{ recipe['duration'] }} hours<br>
+                                    <b>Cooking Duration:</b> {% if recipe['duration'] %} {{'%0.1f' % recipe['duration']}} {% else %} N/A {% endif %} hours<br>
                                 {% endif %}
                                 {% if recipe['difficulty'] == 0 %}
                                     <span class="badge bg-success rounded-pill" >

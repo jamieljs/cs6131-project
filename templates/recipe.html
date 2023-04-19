@@ -12,19 +12,20 @@
             <h2>
                 {% if 'loggedin' in session %}
                     {{recipeinfo['recipe_name']}}
-                    {% if user_bookmarked_recipe %}
-                        <button type="submit" class="btn btn-unfollow btn-lg ms-2" onclick=toggleBookmark() id="toggle-bookmark">Remove Bookmark <i class="bi bi-bookmark-star-fill ms-1"></i></button>
-                    {% else %}
-                        <button type="submit" class="btn btn-follow btn-lg ms-2" onclick=toggleBookmark() id="toggle-bookmark">Bookmark <i class="bi bi-bookmark-plus ms-1"></i></button>
-                    {% endif %}
+                    <button type="submit" class="btn btn-unfollow ms-2" onclick=toggleBookmark() id="toggle-unbookmark" {% if not user_bookmarked_recipe %} style="display:none" {% endif %}>Remove Bookmark <i class="bi bi-bookmark-star-fill ms-1"></i></button>
+                    <button type="submit" class="btn btn-follow ms-2" onclick=toggleBookmark() id="toggle-bookmark" {% if user_bookmarked_recipe %} style="display:none" {% endif %}>Bookmark <i class="bi bi-bookmark-plus ms-1"></i></button>
                 {% else %}
                     {{recipeinfo['recipe_name']}}
                 {% endif %}
             </h2>
             <!-- description -->
-            <p>{{recipeinfo['recipe_desc']}}</p>
+            {% if recipeinfo['recipe_desc'] %}
+            <p style="word-break:break-all">{{recipeinfo['recipe_desc']}}</p>
+            {% endif %}
             <!-- image -->
+            {% if recipeinfo['recipe_image'] %}
             <img src="{{recipeinfo['recipe_image']}}" class="w-75 mx-auto mb-2 d-block">
+            {% endif %}
 
             <!-- ingredients -->
             <table class="table table-primary my-4">
@@ -35,7 +36,7 @@
                 <tbody>
                 {% for ingredient in recipeinfo['ingredients'] %}
                 <tr>
-                    <td> {{ingredient['ingredient_name']}} </td>
+                    <td> {{ingredient['ingr_name']}} </td>
                     <td> {{ingredient['quantity']}} </td>
                 </tr>
                 {% endfor %}
@@ -47,8 +48,10 @@
                 {% for instruction in recipeinfo['instructions'] %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                        <div class="fw-bold">{{instruction['instruction_title']}}</div>
-                        {{instruction['instruction_subtitle']}}
+                        <div class="fw-bold">{{instruction['title']}}</div>
+                        {% if instruction['subtitle'] %}
+                        {{instruction['subtitle']}}
+                        {% endif %}
                     </div>
                 </li>
                 {% endfor %}
@@ -94,20 +97,20 @@
                             <b>Created by:</b>
                             {% if recipeinfo['creator_id'] and recipeinfo['creator_id'] != 0 %}
                                 <a href="{{url_for('profile', user_id=recipeinfo['creator_id'])}}">{{ recipeinfo['creator_username'] }}</a>
-                                {% if 'loggedin' in session and session['id'] != recipeinfo['creator_id'] and user_is_following_creator %}
-                                    <button type="submit" class="btn btn-unfollow ms-2" onclick=toggleFollow() id="toggleFollow">Unfollow <i class="bi bi-star-fill ms-1"></i></button>
-                                {% else %}
-                                    <button type="submit" class="btn btn-follow ms-2" onclick=toggleFollow() id="toggleFollow">Follow <i class="bi bi-star ms-1"></i></button>
+                                {% if 'loggedin' in session and session['id'] != recipeinfo['creator_id'] %}
+                                    <button type="submit" class="btn btn-unfollow ms-2" onclick=toggleFollow() id="toggle-unfollow" {% if not user_is_following_creator %} style="display:none" {% endif %}>Unfollow <i class="bi bi-star-fill ms-1"></i></button>
+                                    <button type="submit" class="btn btn-follow ms-2" onclick=toggleFollow() id="toggle-follow" {% if user_is_following_creator %} style="display:none" {% endif %}>Follow <i class="bi bi-star ms-1"></i></button>
                                 {% endif %}
                             {% else %}
                                 [Deleted User]
                             {% endif %}
                             <br>
                             <small class="text-muted">Date created: {{ recipeinfo['date_created'] }}</small>
+                            <br>
 
-                            <b>Estimated number of portions:</b> {{ recipeinfo['num_portions'] }}<br>
-                            {% if recipeinfo['cook_time'] != None %}
-                                <b>Cooking Duration:</b> {{ recipeinfo['cook_time'] }} hours<br>
+                            <b>Estimated number of portions:</b> {{ recipeinfo['portions'] }}<br>
+                            {% if recipeinfo['duration'] != None %}
+                                <b>Cooking Duration:</b> {{ recipeinfo['duration'] }} hours<br>
                             {% endif %}
                             <br>
                             {% if recipeinfo['difficulty'] == 0 %}
@@ -140,11 +143,11 @@
                     <div id="accordion-two" class="accordion-collapse collapse" aria-labelledby="heading-two">
                         <div class="accordion-body">
 
-                            <h4>Rating: {{recipeinfo['rating']}}</h4>
+                            <h4>Rating: {% if not recipeinfo['rating'] %} N/A {% else %} {{'%0.2f' % recipeinfo['rating']}} {% endif %}</h4>
                             <small class="text-muted">Based on {{num_reviews}} reviews</small>
                             <canvas id="rating-canvas" style="box-sizing:border-box;" class="d-block mx-0 h-auto"></canvas>
                             <script>
-                                const labels = [5.0, 4.0, 3.0, 2.0, 1.0];
+                                const labels = [1.0, 2.0, 3.0, 4.0, 5.0];
                                 const data = {
                                     labels: labels,
                                     datasets: [{
@@ -172,23 +175,29 @@
                                 var ratingChart = new Chart(document.querySelector("#rating-canvas"), config);
                             </script>
                             <hr>
+                            {% if 'loggedin' in session %}
                             <b>Your rating:</b><br>
                             <form method="post" role="form" id="rating-form" class="d-flex align-items-center">
                                 <input type="hidden" name="form_name" value="rating">
                                 <div class="rate">
-                                    <input type="radio" id="star5" name="ratings" value="5.0">
+                                    <input type="radio" id="star5" name="ratings" value="5.0" {% if user_rating==5 %} checked {% endif %}>
                                     <label for="star5" title="text">5 stars</label>
-                                    <input type="radio" id="star4" name="ratings" value="4.0">
+                                    <input type="radio" id="star4" name="ratings" value="4.0" {% if user_rating==4 %} checked {% endif %}>
                                     <label for="star4" title="text">4 stars</label>
-                                    <input type="radio" id="star3" name="ratings" value="3.0">
+                                    <input type="radio" id="star3" name="ratings" value="3.0" {% if user_rating==3 %} checked {% endif %}>
                                     <label for="star3" title="text">3 stars</label>
-                                    <input type="radio" id="star2" name="ratings" value="2.0">
+                                    <input type="radio" id="star2" name="ratings" value="2.0" {% if user_rating==2 %} checked {% endif %}>
                                     <label for="star2" title="text">2 stars</label>
-                                    <input type="radio" id="star1" name="ratings" value="1.0">
+                                    <input type="radio" id="star1" name="ratings" value="1.0" {% if user_rating==1 %} checked {% endif %}>
                                     <label for="star1" title="text">1 star</label>
                                 </div>
                                 <button type="submit" class="btn btn-secondary ms-2">Submit Rating</button>
                             </form>
+                            <form method="post" role="form" id="remove-rating-form" class="d-flex align-items-center">
+                                <input type="hidden" name="form_name" value="remove_rating">
+                                <button type="submit" class="btn btn-dark ms-2"><i class="bi bi-x-lg"></i> Remove Rating</button>
+                            </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -205,7 +214,7 @@
                                 <b>Cuisines:</b>
                                 {% for cuisine in recipeinfo['cuisines'] %}
                                     <span class="badge bg-primary-subtle text-black rounded-pill" >
-                                        {{cuisine}}
+                                        {{cuisine['tag_name']}}
                                     </span>
                                 {% endfor %}
                                 <br>
@@ -214,18 +223,10 @@
                                 <b>Dietary Restrictions:</b>
                                 {% for tag in recipeinfo['dietary'] %}
                                     <span class="badge bg-secondary-subtle text-black rounded-pill" >
-                                        {{tag}}
+                                        {{tag['tag_name']}}
                                     </span>
                                 {% endfor %}
                                 <br>
-                            {% endif %}
-                            {% if recipeinfo['tags'] and recipeinfo['tags']|length != 0 %}
-                                <b>Other Tags:</b>
-                                {% for tag in recipeinfo['tags'] %}
-                                    <span class="badge bg-body-tertiary text-black rounded-pill" >
-                                        {{tag}}
-                                    </span>
-                                {% endfor %}
                             {% endif %}
                         </div>
                     </div>      
@@ -256,6 +257,10 @@
         </div>
     </div>
     <script>
+        followbtn = document.getElementById('toggle-follow');
+        unfollowbtn = document.getElementById('toggle-unfollow');
+        bookmarkbtn = document.getElementById('toggle-bookmark');
+        unbookmarkbtn = document.getElementById('toggle-unbookmark');
         function toggleFollow(){
             params = {
                 'target_id': {{recipeinfo['creator_id']}}
@@ -264,6 +269,14 @@
             $.post('/recipe/togglefollowcreator',params).done((response) => {
                 if (response.status !== 200){
                     alert(response.error)
+                }else{
+                    if (followbtn.style.display === "none") {
+                        followbtn.style.display = "inline";
+                        unfollowbtn.style.display = "none";
+                    } else {
+                        followbtn.style.display = "none";
+                        unfollowbtn.style.display = "inline";
+                    }
                 }
             })
             //alert("toggled follow")
@@ -277,6 +290,14 @@
             $.post('/recipe/togglebookmark',params).done((response) => {
                 if (response.status !== 200){
                     alert(response.error)
+                }else{
+                    if (bookmarkbtn.style.display === "none") {
+                        bookmarkbtn.style.display = "inline";
+                        unbookmarkbtn.style.display = "none";
+                    } else {
+                        bookmarkbtn.style.display = "none";
+                        unbookmarkbtn.style.display = "inline";
+                    }
                 }
             })
             //alert("toggled bookmark")

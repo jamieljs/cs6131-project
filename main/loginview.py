@@ -16,7 +16,7 @@ def login():
                 return redirect('/')
         else:
             flash('Login failed. Please try again.', 'danger')
-    elif registerForm.is_submitted() and registerForm.login.data:
+    elif registerForm.is_submitted() and registerForm.register.data:
         if registerForm.validate():
             result = request.form
             username = result['reg_username']

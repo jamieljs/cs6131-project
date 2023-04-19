@@ -4,307 +4,272 @@
 
 {% block content %}
 
-<div class="container-fluid w-100 min-vh-100 d-flex flex-column justify-content-center m-auto w-50">
-
+<div class="container-fluid w-100 d-flex flex-column justify-content-center m-auto w-50">
     <div class="row m-5 justify-content-center">
-        <div class="col-7">
-            <small>(<a href="{{url_for('recipe', recipe_id=recipeinfo['recipe_id'])}}">View recipe</a>)</small>
+        <div class="col-9">
+            <p>
+                <small>(<a href="{{url_for('recipe', recipe_id=recipeinfo['recipe_id'])}}">View recipe</a>)</small>
+            </p>
 
-            <h2> Recipe Information</h2>
-            <form method="post" role="form" class="input-group my-2">
-                <input type="text" name="content" value="{{recipeinfo['recipe_name']}}" class="form-control" placeholder="Insert Recipe Name Here" required disabled id="name-content">
-                <input type="hidden" name="form_name" value="name">
-                <button type="button" class="btn btn-outline-dark" id="name-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                <button type="button" class="btn btn-dark" disabled id="name-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="name-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
+            <h2>Recipe Information</h2>
+            Note: Information fields with unsaved changes will appear yellow in colour. Please ensure you click the relevant "Edit" buttons to save your changes. If you do not do so, these changes will not be saved.
+            <form class="input-group my-3" onsubmit="editname();return false">
+                <input type="text" name="content" value="{{recipeinfo['recipe_name']}}" class="form-control col" placeholder="Insert Recipe Name Here" required id="name-content">
+                <button type="submit" class="btn btn-primary col-2" id="edit-name">Edit Name</button>
             </form>
-
-            <form method="post" role="form" class="my-2 row d-flex justify-content-between">
-                <div class="col">
-                    <textarea name="content" value="{{recipeinfo['recipe_desc']}}" class="form-control" placeholder="Insert Recipe Description Here" disabled id="description-content"></textarea>
-                    <input type="hidden" name="form_name" value="description">
-                </div>
-                <div class="col-4 w-auto d-flex align-items-center justify-content-end">
-                    <div class="input-group w-auto">
-                        <button type="button" class="btn btn-outline-dark" id="description-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                        <button type="button" class="btn btn-dark" disabled id="description-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                        <button type="submit" class="btn btn-primary" disabled id="description-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
-                    </div>
-                </div>
+            <form class="input-group my-3" onsubmit="editdesc();return false">
+                <textarea name="content" value="{{recipeinfo['recipe_desc']}}" class="form-control col" placeholder="Insert Recipe Description Here" id="desc-content"></textarea>
+                <button type="submit" class="btn btn-primary col-2" id="edit-desc">Edit Description</button>
             </form>
-
-            <form method="post" role="form" class="input-group my-2">
-                <input type="text" name="content" value="{{recipeinfo['recipe_image']}}" class="form-control" placeholder="Insert Recipe Image URL Here" disabled id="image-content">
-                <input type="hidden" name="form_name" value="image">
-                <button type="button" class="btn btn-outline-dark" id="image-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                <button type="button" class="btn btn-dark" disabled id="image-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="image-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
+            <form class="input-group my-3" onsubmit="editimage();return false">
+                <input type="text" name="content" value="{{recipeinfo['recipe_image']}}" class="form-control col" placeholder="Insert Recipe Image URL Here" id="image-content">
+                <button type="submit" class="btn btn-primary col-2" id="edit-image">Edit Image</button>
             </form>
             Image preview:
-            <img src="{{recipeinfo['recipe_image']}}" class="w-25 mx-auto mb-3 d-block" id="image-img">
+            <img src="{{recipeinfo['recipe_image']}}" class="row w-25 mx-auto mb-3 d-block" id="image-img">
 
-            <form method="post" role="form" class="input-group my-2">
-                <span class="input-group-text">Estimated number of portions:</span>
-                <input type="number" step="1" min="0" name="content" value="{{recipeinfo['num_portions']}}" class="form-control" disabled id="portions-content">
-                <input type="hidden" name="form_name" value="portions">
-                <button type="button" class="btn btn-outline-dark" id="portions-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                <button type="button" class="btn btn-dark" disabled id="portions-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="portions-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
+            <form class="input-group my-3" onsubmit="editportions();return false">
+                <input type="number" step="1" min="1" max="50" name="content" value="{{recipeinfo['portions']}}" class="form-control col" required id="portions-content">
+                <button type="submit" class="btn btn-primary col-2" id="edit-portions">Edit Number of Portions</button>
             </form>
 
-            <form method="post" role="form" class="input-group my-2">
-                <span class="input-group-text">Cooking Duration:</span>
-                <input type="number" step="0.5" min="0.5" name="content" value="{{recipeinfo['cook_time']}}" class="form-control" disabled id="cook-time-content">
-                <span class="input-group-text">hours</span>
-                <input type="hidden" name="form_name" value="cook-time">
-                <button type="button" class="btn btn-outline-dark" id="cook-time-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                <button type="button" class="btn btn-dark" disabled id="cook-time-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="cook-time-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
+            <form class="input-group my-3" onsubmit="editduration();return false">
+                <input type="number" step="0.25" min="0.25" max="168" name="content" value="{{recipeinfo['duration']}}" class="form-control col" required id="duration-content">
+                <button type="submit" class="btn btn-primary col-2" id="edit-duration">Edit Cooking Duration (hours)</button>
             </form>
 
-            <form method="post" role="form" class="input-group my-2">
-                <span class="input-group-text">Difficulty:</span>
-                <select class="form-select" disabled id="difficulty-content">
-                    <option value="-1" {% if recipeinfo['difficulty'] == None%} selected {% endif %}>Unknown</option>
-                    <option value="0" {% if recipeinfo['difficulty'] == 0 %} selected {% endif %}>Beginner</option>
-                    <option value="1" {% if recipeinfo['difficulty'] == 1 %} selected {% endif %}>Intermediate</option>
-                    <option value="2" {% if recipeinfo['difficulty'] == 2 %} selected {% endif %}>Advanced</option>
+            <form class="input-group my-3" onsubmit="editdifficulty();return false">
+                <select name="content" class="form-select col" id="difficulty-content">
+                    <option value="0">Beginner</option>
+                    <option value="1">Intermediate</option>
+                    <option value="2">Advanced</option>
                 </select>
-                <input type="hidden" name="form_name" value="difficulty">
-                <button type="button" class="btn btn-outline-dark" id="difficulty-edit">Edit<i class="bi bi-pencil ms-1"></i></button>
-                <button type="button" class="btn btn-dark" disabled id="difficulty-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="difficulty-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
+                <button type="submit" class="btn btn-primary col-2" id="edit-difficulty">Edit Difficulty</button>
             </form>
 
             <hr>
-            <h2 class="my-4">Ingredients</h2>
-            <form id="add-ingredient-form" method="post" role="form" autocomplete="off">
+            Note: If you make any changes in the sections below, any unsaved changes from the section above will be lost.<br>
+
+            <h2 class="mt-3">Ingredients</h2>
+
+            Note: If you attempt to add an ingredient that is already in the list, the quantity will be <i>replaced</i>, not added.<br>
+
+            <form id="add-ingredient-form" class="input-group my-3" method="post" role="form" autocomplete="off">
+                <input type="text" name="ingredient_input" value="" class="form-control col-4 autocomplete" placeholder="Add a Recipe Ingredient (Autocomplete Field)" required id="ingredient-input">
+                <input type="text" name="quantity" value="" class="form-control col-4" placeholder="Quantity, e.g. '1 cup'" required id="ingredient-quantity">
                 <input type="hidden" name="form_name" value="add-ingredient">
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-4 text-end">
-                        Search Ingredient Name (Autocomplete):
-                    </div>
-                    <div class="col-7 autocomplete">
-                        <input type="text" name="ingredient" class="form-control rounded-pill my-2 mx-auto" required id="ingredient-input">
-                    </div>
-                </div>
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-4 text-end">
-                        Quantity of Ingredient:
-                    </div>
-                    <div class="col-7">
-                        <input type="text" name="quantity" class="form-control rounded-pill my-2 mx-auto" required id="quantity-input">
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary my-4 mx-auto" id="add-ingredient-submit">Add Ingredient to List</button>
-                </div>
+                <button type="submit" class="btn btn-primary col-2">Add to Recipe</button>
             </form>
             <script src="{{url_for('static',filename='js/autocomplete.js')}}"></script>
             <script>
                 autocomplete(document.getElementById("ingredient-input"), {{ingredient_names|tojson}});
             </script>
-            <table class="table table-primary my-2" id="ingredient-content">
+            <table class="table table-hover my-3 mx-auto" id="ingredient-table">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Ingredient</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Delete</th>
+                        <th scope="col" data-type="string">Ingredient</th>
+                        <th scope="col" data-type="string">Quantity</th>
+                        <th scope="col" data-type="string">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ingredient in recipeinfo['ingredients'] %}
-                        <tr id="table-row-{{ingredient['ingredient_id']}}">
-                            <td class="align-middle"> {{ingredient['ingredient_name']}} </td>
-                            <td class="align-middle"> {{ingredient['quantity']}} </td>
+                        <tr>
+                            <td class="align-middle">{{ingredient['ingr_name']}}</td>
+                            <td class="align-middle">{{ingredient['quantity']}}</td>
                             <td class="align-middle">
-                               <button class="btn btn-outline-danger" disabled id="delete-ingredient-{{ingredient['ingredient_id']}}"><i class="bi bi-trash3"></i></button>
+                                <form method="post" role="form">
+                                    <input type="hidden" name="form_name" value="delete-ingredient">
+                                    <input type="hidden" name="delete_ingredient_id" value="{{ingredient['ingr_id']}}">
+                                    <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <!--TODO: not functional-->
-            <form method="post" role="form" class="input-group my-4 justify-content-center" id="del-ingredient-form">
-                <button type="button" class="btn btn-outline-dark" id="del-ingredient-edit">Delete Ingredients<i class="bi bi-pencil ms-1"></i></button>
-                <input type="hidden" name="form_name" value="delete-ingredient">
-                <button type="button" class="btn btn-dark" disabled id="del-ingredient-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="del-ingredient-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
-            </form>
 
             <hr>
-            
-            <h2 class="my-4">Instructions</h2>
-
-            <form id="add-instruction-form" method="post" role="form" autocomplete="off">
-                <input type="hidden" name="form_name" value="add-instruction">
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-4 text-end">
+            <h2>Instructions</h2>
+            Warning: be careful not to accidentally click the "delete" button; deleted instructions are not recoverable.
+            <form id="add-instruction-form" method="post" role="form">
+                <div class="row input-group my-3">
+                    <span class="input-group-text col-3">
                         Main instruction:
-                    </div>
-                    <div class="col-7 autocomplete">
-                        <input type="text" name="instruction_title" class="form-control rounded-pill my-2 mx-auto" required id="instruction-title-input">
-                    </div>
+                    </span>
+                    <input type="text" name="instruction_title" class="form-control col" required id="instruction-title-input">
                 </div>
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-4 text-end">
+                <div class="row input-group my-3">
+                    <span class="input-group-text col-3">
                         Additional information / notes:
-                    </div>
-                    <div class="col-7">
-                        <textarea name="instruction_notes" class="form-control my-2 mx-auto" id="instruction-notes-input"></textarea>
-                    </div>
+                    </span>
+                    <textarea name="instruction_subtitle" class="form-control col" id="instruction-subtitle-input"></textarea>
                 </div>
-                <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary my-4 mx-auto" id="add-instruction-submit">Add Instruction</button>
-                </div>
+                <input type="hidden" name="form_name" value="add-instruction">
+                <button type="submit" class="btn btn-primary my-1" id="add-instruction-submit">Add Instruction</button>
             </form>
-
-            <ol class="list-group list-group-numbered" id="instruction-content">
+            <ol class="list-group list-group-numbered my-3" id="instruction-content">
                 {% for instruction in recipeinfo['instructions'] %}
-                <li class="list-group-item d-flex justify-content-between align-items-center row" id="instruction-row-{{instruction['instruction_index']}}">
+                <li class="list-group-item d-flex justify-content-between align-items-center row">
                     <div class="col mx-2">
-                        <div class="fw-bold">{{instruction['instruction_title']}}</div>
-                        {{instruction['instruction_subtitle']}}
+                        <div class="fw-bold">{{instruction['title']}}</div>
+                        {% if instruction['subtitle'] %} {{instruction['subtitle']}} {% endif %}
                     </div>
-                    <div class="col-3 w-auto">
-                        <button class="btn btn-outline-danger" disabled id="delete-instruction-{{instruction['instruction_index']}}"><i class="bi bi-trash3"></i></button>
-                        <button class="btn btn-outline-dark" disabled id="up-instruction-{{instruction['instruction_index']}}"><i class="bi bi-arrow-up"></i></button>
-                        <button class="btn btn-outline-dark" disabled id="down-instruction-{{instruction['instruction_index']}}"><i class="bi bi-arrow-down"></i></button>
+                    <div class="col-1 w-auto">
+                        <div class="row">
+                            <form class="col" method="post" role="form">
+                                <input type="hidden" name="form_name" value="up-instruction">
+                                <input type="hidden" name="instruction_id" value="{{instruction['instr_id']}}">
+                                <button type="submit" class="btn btn-outline-dark" {% if instruction['list_order'] == 1 %} disabled {% endif %}><i class="bi bi-arrow-up"></i></button>
+                            </form>
+                            <form class="col" method="post" role="form">
+                                <input type="hidden" name="form_name" value="down-instruction">
+                                <input type="hidden" name="instruction_id" value="{{instruction['instr_id']}}">
+                                <button type="submit" class="btn btn-outline-dark" {% if instruction['list_order'] == recipeinfo['instructions']|length %} disabled {% endif %}><i class="bi bi-arrow-down"></i></button>
+                            </form>
+                            <form class="col" method="post" role="form">
+                                <input type="hidden" name="form_name" value="delete-instruction">
+                                <input type="hidden" name="instruction_id" value="{{instruction['instr_id']}}">
+                                <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </li>
                 {% endfor %}
             </ol>
-            <!--TODO: not functional-->
-            <form method="post" role="form" class="input-group my-4 justify-content-center" id="instruction-form">
-                <button type="button" class="btn btn-outline-dark" id="instruction-edit">Edit Order / Delete Instructions<i class="bi bi-pencil ms-1"></i></button>
-                <input type="hidden" name="form_name" value="update-instruction-list">
-                <button type="button" class="btn btn-dark" disabled id="instruction-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                <button type="submit" class="btn btn-primary" disabled id="instruction-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
-            </form>
 
             <hr>
-
-            <h2 class="my-4">Tags</h2>
-            {% if recipeinfo['cuisines'] and recipeinfo['cuisines']|length != 0 %}
-                <h3>Cuisines</h3>
-                <form method="post" role="form" id="cuisine-form">
-                    <input type="hidden" name="form_name" value="cuisine">
-                    <div class="form-group m-3" id="cuisine-content">
-                        {% for choice in cuisine_tags %}
-                            <input class="btn-check" id="select-cuisine-{{choice[0]}}" name="select_cuisine" type="checkbox" value="{{choice[0]}}">
-                            <label class="btn btn-outline-primary rounded-pill m-1" for="select-cuisine-{{choice[0]}}">{{choice[1]}}</label>
-                        {% endfor %}
-                    </div>
-                    <div class="input-group my-4">
-                        <button type="button" class="btn btn-outline-dark" id="cuisine-edit">Edit Selection<i class="bi bi-pencil ms-1"></i></button>
-                        <button type="button" class="btn btn-dark" disabled id="cuisine-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                        <button type="submit" class="btn btn-primary" disabled id="cuisine-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
-                    </div>
-                </form>
-            {% endif %}
-            {% if recipeinfo['dietary'] and recipeinfo['dietary']|length != 0 %}
-                <h3>Dietary Restrictions</h3>
-                <form method="post" role="form" id="dietary-form">
-                    <input type="hidden" name="form_name" value="dietary">
-                    <div class="form-group m-3" id="dietary-content">
-                        {% for choice in dietary_tags %}
-                            <input class="btn-check" id="select-dietary-{{choice[0]}}" name="select_dietary" type="checkbox" value="{{choice[0]}}">
-                            <label class="btn btn-outline-primary rounded-pill m-1" for="select-dietary-{{choice[0]}}">{{choice[1]}}</label>
-                        {% endfor %}
-                    </div>
-                    <div class="input-group my-4">
-                        <button type="button" class="btn btn-outline-dark" id="dietary-edit">Edit Selection<i class="bi bi-pencil ms-1"></i></button>
-                        <button type="button" class="btn btn-dark" disabled id="dietary-cancel">Cancel<i class="bi bi-x-lg ms-1"></i></button>
-                        <button type="submit" class="btn btn-primary" disabled id="dietary-submit">Save<i class="bi bi-check-lg ms-1"></i></button>
-                    </div>
-                </form>
-            {% endif %}
+            <h2>Cuisine Tags</h2>
+            Please remember to save your changes by clicking the "Edit" button!
+            <form method="post" role="form">
+                <div class="form-group mx-auto mt-2">
+                    {% for choice in cuisine_form.options %}
+                        {% if choice.data in cur_cuisine_ids %}
+                            {{ choice(class_="btn-check", checked=True) }}
+                            {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
+                        {% else %}
+                            {{ choice(class_="btn-check") }}
+                            {{ choice.label(class_="btn btn-outline-primary rounded-pill m-1") }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {{ cuisine_form.edit_cuisines(class_="btn btn-primary my-3") }}
+            </form>
+            
         </div>
     </div>
 
-    <!-- Only can edit one section at a time -->
-    <script>
-        var edit_btn_list = [
-            document.querySelector("#name-edit"),
-            document.querySelector("#description-edit"),
-            document.querySelector("#image-edit"),
-            document.querySelector("#portions-edit"),
-            document.querySelector("#cook-time-edit"),
-            document.querySelector("#difficulty-edit"),
-            document.querySelector("#add-ingredient-submit"),
-            document.querySelector("#del-ingredient-edit"),
-            document.querySelector("#add-instruction-submit"),
-            document.querySelector("#instruction-edit"),
-            document.querySelector("#cuisine-edit"),
-            document.querySelector("#dietary-edit")
-        ];
-
-        function buttonVisibility(content, edit_btn, cancel_btn, submit_btn, original_value) {
-            var toggleDisables = function() {
-                content.toggleAttribute("disabled");
-                for (let i = 0; i < edit_btn_list.length; i++){
-                    edit_btn_list[i].toggleAttribute("disabled");
-                }
-                cancel_btn.toggleAttribute("disabled");
-                submit_btn.toggleAttribute("disabled");
-            };
-            edit_btn.onclick = function() {
-                toggleDisables();
-            };
-            cancel_btn.onclick = function() {
-                if (content.nodeName == "SELECT") {
-                    content.selectedIndex = parseInt(original_value) + 1;
-                } else if (content.type == "number") {
-                    content.setAttribute("value", parseFloat(original_value));
-                } else {
-                    content.setAttribute("value", original_value);
-                }
-                toggleDisables();
-            };
-        }
-        buttonVisibility(document.querySelector("#name-content"), document.querySelector("#name-edit"), document.querySelector("#name-cancel"), document.querySelector("#name-submit"), "{{recipeinfo['recipe_name']}}");
-        buttonVisibility(document.querySelector("#description-content"), document.querySelector("#description-edit"), document.querySelector("#description-cancel"), document.querySelector("#description-submit"), "{{recipeinfo['recipe_desc']}}");
-        
-        var image_link = document.querySelector("#image-content");
-        var image_display = document.querySelector("#image-img");
-        buttonVisibility(image_link, document.querySelector("#image-edit"), document.querySelector("#image-cancel"), document.querySelector("#image-submit"), "{{recipeinfo['recipe_image']}}");
-        image_link.addEventListener("input", function(e) {
-            var a, b, i, val = this.value;
-            image_display.setAttribute("src", val);
-        });
-
-        buttonVisibility(document.querySelector("#portions-content"), document.querySelector("#portions-edit"), document.querySelector("#portions-cancel"), document.querySelector("#portions-submit"), "{{recipeinfo['num_portions']}}");
-        buttonVisibility(document.querySelector("#cook-time-content"), document.querySelector("#cook-time-edit"), document.querySelector("#cook-time-cancel"), document.querySelector("#cook-time-submit"), "{{recipeinfo['cook_time']}}");
-        buttonVisibility(document.querySelector("#difficulty-content"), document.querySelector("#difficulty-edit"), document.querySelector("#difficulty-cancel"), document.querySelector("#difficulty-submit"), "{{recipeinfo['difficulty']}}");
-
-        
-        function buttonVisibilityWithCursor(content_id, edit_btn, cancel_btn, submit_btn) {
-            var toggleDisables = function() {
-                for (let i = 0; i < content_btn_list.length; i++) {
-                    content_btn_list[i].toggleAttribute("disabled")
-                }
-                for (let i = 0; i < edit_btn_list.length; i++){
-                    edit_btn_list[i].toggleAttribute("disabled");
-                }
-                cancel_btn.toggleAttribute("disabled");
-                submit_btn.toggleAttribute("disabled");
-            };
-            edit_btn.onclick = function() {
-                content_btn_list = $(content_id.concat(" :button"));
-                toggleDisables();
-            };
-            cancel_btn.onclick = function() {
-                content_btn_list = $(content_id.concat(" :button"));
-                toggleDisables();
-                window.location.reload();
-            };
-        }
-        buttonVisibilityWithCursor("#ingredient-content",document.querySelector("#del-ingredient-edit"),document.querySelector("#del-ingredient-cancel"),document.querySelector("#del-ingredient-submit"));
-        buttonVisibilityWithCursor("#instruction-content",document.querySelector("#instruction-edit"),document.querySelector("#instruction-cancel"),document.querySelector("#instruction-submit"));
-        buttonVisibilityWithCursor("#cuisine-content",document.querySelector("#cuisine-edit"),document.querySelector("#cuisine-cancel"),document.querySelector("#cuisine-submit"));
-        buttonVisibilityWithCursor("#dietary-content",document.querySelector("#dietary-edit"),document.querySelector("#dietary-cancel"),document.querySelector("#dietary-submit"));
-    </script>
     
+    <script>
+        $('#name-content, #desc-content, #portions-content, #duration-content, #difficulty-content').change(function() {
+            $(this).addClass('unsaved')
+        });
+        $('#image-content').change(function() {
+            $(this).addClass('unsaved')
+            $('#image-img').attr('src', $(this).val())
+        })
+        function editname(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'name': document.getElementById('name-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editname',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#name-content').removeClass('unsaved')
+                    document.title = 'Edit Recipe - ' + params['name']
+                }
+            })
+        }
+        function editdesc(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'desc': document.getElementById('desc-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editdesc',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#desc-content').removeClass('unsaved')
+                }
+            })
+        }
+        function editimage(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'image': document.getElementById('image-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editimage',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#image-content').removeClass('unsaved')
+                }
+            })
+        }
+        function editportions(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'portions': document.getElementById('portions-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editportions',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#portions-content').removeClass('unsaved')
+                }
+            })
+        }
+        function editduration(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'duration': document.getElementById('duration-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editduration',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#duration-content').removeClass('unsaved')
+                }
+            })
+        }
+        function editdifficulty(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'difficulty': document.getElementById('difficulty-content').value
+            }
+            console.log(params)
+            $.post('/editrecipe/editdifficulty',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    $('#difficulty-content').removeClass('unsaved')
+                }
+            })
+        }
+        /*** need to do the enabling disabling? or dont? maybe a modal ***/
+        function editinstructions(){
+            params = {
+                'target_id': {{recipeinfo['recipe_id']}},
+                'instructions': 0
+            }
+            console.log(params)
+            $.post('/editrecipe/editinstructions',params).done((response) => {
+                if (response.status !== 200){
+                    alert(response.error)
+                } else {
+                    
+                }
+            })
+        }
+
+    </script>    
 </div>
 
 {% endblock %}

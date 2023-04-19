@@ -589,3 +589,7 @@ to accurately  center the arrow */
         transform: translateX(50%);
     }
 }
+
+.unsaved {
+    background-color: var(--bs-warning-bg-subtle) !important;
+}

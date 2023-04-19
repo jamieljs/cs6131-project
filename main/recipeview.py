@@ -45,20 +45,23 @@ def recipe(recipe_id):
     form = DeleteRecipeForm()
 
     result = request.form
-    if 'form_name' in result and result['form_name'] == 'rating':
-        if 'ratings' in result:
-            rating = result['ratings']
-            tools.updateRating(userid, recipeinfo['recipe_id'], rating)
-            flash('Rating added', 'success')
-        else:
-            tools.updateRating(userid, recipeinfo['recipe_id'], None)
+    if 'form_name' in result:
+        if result['form_name'] == 'rating':
+            if 'ratings' in result:
+                rating = result['ratings']
+                tools.updateRating(userid, recipeinfo['recipe_id'], rating)
+                recipe_ratings=tools.getRecipeRatings(recipe_id)
+                flash('Rating added', 'success')
+        elif result['form_name'] == 'remove_rating':
+            tools.removeRating(userid, recipeinfo['recipe_id'])
+            recipe_ratings=tools.getRecipeRatings(recipe_id)
             flash('Rating removed!', 'success')
         recipeinfo = tools.getRecipeInfoFromRecipeId(recipe_id)
     elif form.is_submitted():
         if form.delete_recipe.data and form.validate():
             tools.deleteRecipe(recipeinfo['recipe_id'])
-            return redirect('/browse?creator=' + userid)
+            return redirect('/browse?creator=' + str(userid))
         else:
             flash('Recipe deletion failed. Please try again.', 'danger')
 
-    return render_template('recipe.html', user_is_following_creator=tools.isFollowingProfile(recipeinfo['creator_id']), user_bookmarked_recipe=tools.bookmarkedRecipe(recipeinfo['recipe_id']), recipeinfo=recipeinfo, form=form, recipe_ratings=recipe_ratings, num_reviews=num_reviews)
+    return render_template('recipe.html', user_is_following_creator=tools.isFollowingProfile(recipeinfo['creator_id']), user_bookmarked_recipe=tools.bookmarkedRecipe(recipeinfo['recipe_id']), user_rating=tools.getUserRating(recipeinfo['recipe_id']), recipeinfo=recipeinfo, form=form, recipe_ratings=recipe_ratings, num_reviews=num_reviews)

@@ -20,16 +20,20 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     reg_username = StringField('Username', [InputRequired("Please enter a username."), Length(min=3, max=15)], render_kw={"placeholder": "username"})
-    reg_password = PasswordField('Password', [InputRequired("Please enter a password."), Length(min=6, max=30), EqualTo("confirm_password", message="Passwords must match")], render_kw={"placeholder": "password"})
+    reg_password = PasswordField('Password', [InputRequired("Please enter a password."), Length(min=4, max=30), EqualTo("confirm_password", message="Passwords must match")], render_kw={"placeholder": "password"})
     confirm_password = PasswordField('Confirm Password', [InputRequired("Please confirm your password."), EqualTo("reg_password", message="Passwords must match")], render_kw={"placeholder": "confirm_password"})
     register = SubmitField('Register')
+
+class DeleteAccForm(FlaskForm):
+    del_password = PasswordField('Password', [InputRequired("Please enter your password.")], render_kw={"placeholder": "password"})
+    delete_acc = SubmitField('Delete My Account')
 
 class FeedbackForm(FlaskForm):
     feedback_text = TextAreaField('Feedback', [InputRequired("Cannot submit empty feedback!"), Length(min=10)], render_kw={"placeholder": "feedback", "style": "height: 400px;"})
     submit_feedback = SubmitField('Submit Feedback')
 
 class RecipeQueryForm(FlaskForm):
-    search_text = StringField(None, render_kw={"placeholder": "Search by recipe name or description..."}) # name or description
+    search_text = StringField(None, render_kw={"placeholder": "Search by recipe name..."}) # name
     search_creator = StringField(None, render_kw={"placeholder": "Enter username of creator"}) # username
     search_ingredient = StringField(None, render_kw={"placeholder": "Enter name of ingredient to include"}) # ingredient
     search_cuisine = MultiCheckboxField(None) # recipes shown can contain any chosen tag
@@ -54,3 +58,7 @@ class AddInventoryForm(FlaskForm):
     inventory_ingredient = StringField('Search Ingredient Name (Autocomplete):', [InputRequired()])
     expiry_date = DateField('Select Expiry Date:', [InputRequired()])
     submit_add_inventory = SubmitField('Add Ingredient to Inventory')
+
+class EditRecipeCuisinesForm(FlaskForm):
+    options = MultiCheckboxField(None)
+    edit_cuisines = SubmitField('Edit Cuisine Tags')
